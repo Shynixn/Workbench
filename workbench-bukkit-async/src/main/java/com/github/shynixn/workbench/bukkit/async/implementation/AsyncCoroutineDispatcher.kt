@@ -1,4 +1,4 @@
-package com.github.shynixn.workbench.async.implementation
+package com.github.shynixn.workbench.bukkit.async.implementation
 
 import kotlinx.coroutines.CoroutineDispatcher
 import org.bukkit.Bukkit
@@ -6,19 +6,19 @@ import org.bukkit.plugin.Plugin
 import kotlin.coroutines.CoroutineContext
 
 /**
- * The SyncCoroutineDispatcher handles context switching to the game thread.
+ * The SyncCoroutineDispatcher handles context switching to any async thread.
  */
-class SyncCoroutineDispatcher(private val plugin: Plugin) : CoroutineDispatcher() {
+class AsyncCoroutineDispatcher(private val plugin: Plugin) : CoroutineDispatcher() {
     /**
-     *  Handles dispatching the coroutine on the game thread.
+     *  Handles dispatching the coroutine on any async thread.
      *  @param context CoroutineContext to dispatch tasks.
      *  @param block runnable callback.
      */
     override fun dispatch(context: CoroutineContext, block: Runnable) {
         if (Bukkit.isPrimaryThread()) {
-            block.run()
+            plugin.server.scheduler.runTaskAsynchronously(plugin, block)
         } else {
-            plugin.server.scheduler.runTask(plugin, block)
+            block.run()
         }
     }
 }

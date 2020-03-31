@@ -1,6 +1,6 @@
-package com.github.shynixn.workbench.common.dsl
+package com.github.shynixn.workbench.bukkit.common.dsl
 
-import com.github.shynixn.workbench.common.implementation.WorkBenchResourceImpl
+import org.bukkit.plugin.Plugin
 
 /**
  * Created by Shynixn 2020.
@@ -29,8 +29,20 @@ import com.github.shynixn.workbench.common.implementation.WorkBenchResourceImpl
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+interface WorkbenchResource {
+    /**
+     * Registers a new sub workBench resource. Gets immediately enabled if the parent
+     * workBench resource is enabled. Gets automatically disabled if the parent is disabled.
+     */
+    fun registerSubResource(workbenchResource: WorkbenchResource)
 
-/**
- * WorkBenchResource, call enable or disable on it.
- */
-val workbenchResource: WorkbenchResource = WorkBenchResourceImpl()
+    /**
+     * Allocates all workBench resources.
+     */
+    fun onEnable(plugin: Plugin)
+
+    /**
+     * Frees all workBench resources.
+     */
+    fun onDisable()
+}

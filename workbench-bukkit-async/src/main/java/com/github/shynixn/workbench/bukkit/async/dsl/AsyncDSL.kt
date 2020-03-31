@@ -1,6 +1,9 @@
-package com.github.shynixn.workbench.common.dsl
+package com.github.shynixn.workbench.bukkit.async.dsl
 
-import org.bukkit.plugin.Plugin
+import com.github.shynixn.workbench.bukkit.async.implementation.AsyncWorkbenchResource
+import com.github.shynixn.workbench.bukkit.common.dsl.workbenchResource
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
  * Created by Shynixn 2020.
@@ -29,20 +32,36 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface WorkbenchResource {
-    /**
-     * Registers a new sub workBench resource. Gets immediately enabled if the parent
-     * workBench resource is enabled. Gets automatically disabled if the parent is disabled.
-     */
-    fun registerSubResource(workbenchResource: WorkbenchResource)
 
-    /**
-     * Allocates all workBench resources.
-     */
-    fun onEnable(plugin: Plugin)
+private var resource =
+    AsyncWorkbenchResource()
 
-    /**
-     * Frees all workBench resources.
-     */
-    fun onDisable()
+/**
+ * Registers the resources if not already registered.
+ */
+private fun registerIfNotRegistered() {
+    if (!resource.registered) {
+        workbenchResource.registerSubResource(resource)
+        resource.registered = true
+    }
+}
+
+/**
+ * Launches a new coroutine scope within the game thread.
+ */
+fun launch(f: suspend () -> Unit) {
+    registerIfNotRegistered()
+    GlobalScope.launch(resource.syncDispatcher!!) {
+        f.invoke()
+    }
+}
+
+/**
+ * Launches a new coroutine scope within any async thread.
+ */
+fun async(f: suspend () -> Unit) {
+    registerIfNotRegistered()
+    GlobalScope.launch(resource.asyncDispatcher!!) {
+        f.invoke()
+    }
 }

@@ -2,4 +2,5 @@ rootProject.name = 'workbench-root'
 include 'workbench-bukkit-common'
 include 'workbench-bukkit-particle'
 include 'workbench-bukkit-async'
+include 'workbench-minecraft-common'
 

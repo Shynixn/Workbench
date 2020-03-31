@@ -1,7 +1,6 @@
-package com.github.shynixn.workbench.common.implementation
+package com.github.shynixn.workbench.minecraft.common.dsl
 
-import com.github.shynixn.workbench.common.dsl.WorkbenchResource
-import org.bukkit.plugin.Plugin
+import com.github.shynixn.workbench.minecraft.common.implementation.PositionImpl
 
 /**
  * Created by Shynixn 2020.
@@ -30,36 +29,13 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class WorkBenchResourceImpl : WorkbenchResource {
-    private var plugin: Plugin? = null
-    private val workBenches = HashSet<WorkbenchResource>()
 
-    /**
-     * Registers a new sub workBench resource. Gets immediately enabled if the parent
-     * workBench resource is enabled. Gets automatically disabled if the parent is disabled.
-     */
-    override fun registerSubResource(workbenchResource: WorkbenchResource) {
-        workBenches.add(workbenchResource)
-
-        if (plugin != null) {
-            workbenchResource.onEnable(plugin!!)
-        }
-    }
-
-    /**
-     * Allocates all workBench resources.
-     */
-    override fun onEnable(plugin: Plugin) {
-        this.plugin = plugin
-        workBenches.forEach { e -> e.onEnable(plugin) }
-    }
-
-    /**
-     * Frees all workBench resources.
-     */
-    override fun onDisable() {
-        workBenches.forEach { e -> e.onDisable() }
-        workBenches.clear()
-        this.plugin = null
-    }
+/**
+ * Creates a new position.
+ */
+fun position(f: Position.() -> Unit): Position {
+    val position = PositionImpl()
+    f.invoke(position)
+    return position
 }
+

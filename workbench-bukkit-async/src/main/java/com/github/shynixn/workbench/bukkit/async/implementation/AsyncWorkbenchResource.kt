@@ -1,6 +1,6 @@
-package com.github.shynixn.workbench.async.implementation
+package com.github.shynixn.workbench.bukkit.async.implementation
 
-import com.github.shynixn.workbench.common.dsl.WorkbenchResource
+import com.github.shynixn.workbench.bukkit.common.dsl.WorkbenchResource
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelChildren
 import org.bukkit.plugin.Plugin
@@ -52,8 +52,10 @@ class AsyncWorkbenchResource : WorkbenchResource {
             throw IllegalArgumentException("AsyncWorkBench cannot be enabled twice!")
         }
 
-        asyncDispatcher = AsyncCoroutineDispatcher(plugin)
-        syncDispatcher = SyncCoroutineDispatcher(plugin)
+        asyncDispatcher =
+            AsyncCoroutineDispatcher(plugin)
+        syncDispatcher =
+            SyncCoroutineDispatcher(plugin)
     }
 
     /**
