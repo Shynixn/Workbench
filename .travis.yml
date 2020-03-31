@@ -15,7 +15,8 @@ before_install:
 install:
   - ./gradlew assemble || ./gradlew downloadDependencies
 script:
-  - sed -i 's;0.0.CurrentBuildNumber;0.0.$TRAVIS_BUILD_NUMBER;g' 'build.gradle'
+  - sed -i "s;0.0.CurrentBuildNumber;0.0.$TRAVIS_BUILD_NUMBER;g" 'build.gradle'
+  - echo "$(cat build.gradle)"
   - ./gradlew clean build
   - ./gradlew clean publishToNexus > /dev/null
   - ./gradlew closeAndReleaseRepository
