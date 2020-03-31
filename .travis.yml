@@ -1,0 +1,23 @@
+language: java
+sudo: true
+jdk:
+  - openjdk8
+cache:
+  timeout: 1000
+  directories:
+    - $HOME/.m2/repository/org/spigotmc
+    - $HOME/.gradle/caches/minecraft
+before_install:
+  - chmod +x gradlew
+  - if [[ $TRAVIS_COMMIT_MESSAGE == *"--refresh-dependencies"* ]]; then ./gradlew downloadDependencies; fi ;
+  - git config --global user.email "travis@travis-ci.org" && git config --global user.name "Travis CI"
+install:
+  - ./gradlew assemble || ./gradlew downloadDependencies
+script:
+  - sed -i 's_0.0.CurrentBuildNumber_0.0.$TRAVIS_BUILD_NUMBER_g' 'src/app/app.component.ts'
+  - ./gradlew clean build
+  - ./gradlew clean publishToNexus > /dev/null
+  - ./gradlew closeAndReleaseRepository
+after_success:
+  - ./gradlew jacocoTestReport
+  - bash <(curl -s https://codecov.io/bash)
