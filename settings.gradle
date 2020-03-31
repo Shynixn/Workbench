@@ -1,0 +1,4 @@
+rootProject.name = 'workbench-root'
+include 'workbench-bukkit-particle'
+include 'workbench-bukkit-async'
+
