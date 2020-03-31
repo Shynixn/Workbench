@@ -1,7 +1,4 @@
-package com.github.shynixn.workbench.bukkit.common.implementation
-
-import com.github.shynixn.workbench.bukkit.common.dsl.WorkbenchResource
-import org.bukkit.plugin.Plugin
+package com.github.shynixn.workbench.bukkit.common.dsl
 
 /**
  * Created by Shynixn 2020.
@@ -30,36 +27,24 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class WorkBenchResourceImpl : WorkbenchResource {
-    var plugin: Plugin? = null
-    private val workBenches = HashSet<WorkbenchResource>()
+interface Logger {
+    /**
+     * Logs an information message.
+     */
+    fun info(f: () -> String)
 
     /**
-     * Registers a new sub workBench resource. Gets immediately enabled if the parent
-     * workBench resource is enabled. Gets automatically disabled if the parent is disabled.
+     * Logs a warning message.
      */
-    override fun registerSubResource(workbenchResource: WorkbenchResource) {
-        workBenches.add(workbenchResource)
-
-        if (plugin != null) {
-            workbenchResource.onEnable(plugin!!)
-        }
-    }
+    fun warning(f: () -> String)
 
     /**
-     * Allocates all workBench resources.
+     * Logs an error message.
      */
-    override fun onEnable(plugin: Plugin) {
-        this.plugin = plugin
-        workBenches.forEach { e -> e.onEnable(plugin) }
-    }
+    fun error(f: () -> String)
 
     /**
-     * Frees all workBench resources.
+     * Logs an throwable.
      */
-    override fun onDisable() {
-        workBenches.forEach { e -> e.onDisable() }
-        workBenches.clear()
-        this.plugin = null
-    }
+    fun throwable(f: () -> Throwable)
 }

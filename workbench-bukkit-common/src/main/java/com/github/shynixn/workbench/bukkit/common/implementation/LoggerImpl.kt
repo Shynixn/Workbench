@@ -1,7 +1,6 @@
 package com.github.shynixn.workbench.bukkit.common.implementation
 
-import com.github.shynixn.workbench.bukkit.common.dsl.WorkbenchResource
-import org.bukkit.plugin.Plugin
+import com.github.shynixn.workbench.bukkit.common.dsl.Logger
 
 /**
  * Created by Shynixn 2020.
@@ -30,36 +29,36 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class WorkBenchResourceImpl : WorkbenchResource {
-    var plugin: Plugin? = null
-    private val workBenches = HashSet<WorkbenchResource>()
-
+class LoggerImpl : Logger {
+    var infoMessage: String? = null
+    var warningMessage: String? = null
+    var errorMessage: String? = null
+    var throwable: Throwable? = null
     /**
-     * Registers a new sub workBench resource. Gets immediately enabled if the parent
-     * workBench resource is enabled. Gets automatically disabled if the parent is disabled.
+     * Logs an information message.
      */
-    override fun registerSubResource(workbenchResource: WorkbenchResource) {
-        workBenches.add(workbenchResource)
-
-        if (plugin != null) {
-            workbenchResource.onEnable(plugin!!)
-        }
+    override fun info(f: () -> String) {
+        infoMessage = f.invoke()
     }
 
     /**
-     * Allocates all workBench resources.
+     * Logs a warning message.
      */
-    override fun onEnable(plugin: Plugin) {
-        this.plugin = plugin
-        workBenches.forEach { e -> e.onEnable(plugin) }
+    override fun warning(f: () -> String) {
+        warningMessage = f.invoke()
     }
 
     /**
-     * Frees all workBench resources.
+     * Logs an error message.
      */
-    override fun onDisable() {
-        workBenches.forEach { e -> e.onDisable() }
-        workBenches.clear()
-        this.plugin = null
+    override fun error(f: () -> String) {
+        errorMessage = f.invoke()
+    }
+
+    /**
+     * Logs an throwable.
+     */
+    override fun throwable(f: () -> Throwable) {
+        throwable = f.invoke()
     }
 }
