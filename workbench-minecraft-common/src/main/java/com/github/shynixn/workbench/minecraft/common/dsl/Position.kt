@@ -1,5 +1,7 @@
 package com.github.shynixn.workbench.minecraft.common.dsl
 
+import kotlin.reflect.KProperty
+
 /**
  * Created by Shynixn 2019.
  * <p>
@@ -29,6 +31,19 @@ package com.github.shynixn.workbench.minecraft.common.dsl
  */
 
 interface Position {
+    companion object {
+        val worldName: KProperty<*> = Position::worldName
+        val x: KProperty<*> = Position::x
+        val y: KProperty<*> = Position::y
+        val z: KProperty<*> = Position::z
+        val yaw: KProperty<*> = Position::yaw
+        val pitch: KProperty<*> = Position::pitch
+        val blockX: KProperty<*> = Position::blockX
+        val blockY: KProperty<*> = Position::blockY
+        val blockZ: KProperty<*> = Position::blockZ
+        val all: List<KProperty<*>> = arrayListOf(worldName, x, y, z, yaw, pitch, blockX, blockY, blockZ)
+    }
+
     /** [worldName] which world the location is. */
     var worldName: String?
 

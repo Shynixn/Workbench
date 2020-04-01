@@ -1,5 +1,7 @@
-package com.github.shynixn.workbench.bukkit.common.dsl
+package com.github.shynixn.workbench.bukkit.item.implementation
 
+import com.github.shynixn.workbench.bukkit.common.dsl.WorkbenchResource
+import org.bukkit.Material
 import org.bukkit.plugin.Plugin
 
 /**
@@ -29,20 +31,20 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface WorkbenchResource {
-    /**
-     * Registers a new sub workBench resource. Gets immediately enabled if the parent
-     * workBench resource is enabled. Gets automatically disabled if the parent is disabled.
-     */
-    fun registerSubResource(workbenchResource: WorkbenchResource) {}
+class ItemWorkbenchResource : WorkbenchResource {
+    var registered: Boolean = false
+    val materialCache: MutableMap<Any, Material> = HashMap()
 
     /**
      * Allocates all workBench resources.
      */
-    fun onEnable(plugin: Plugin)
+    override fun onEnable(plugin: Plugin) {
+    }
 
     /**
      * Frees all workBench resources.
      */
-    fun onDisable()
+    override fun onDisable() {
+        materialCache.clear()
+    }
 }

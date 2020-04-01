@@ -20,6 +20,12 @@ log {
 ```
 
 ```kotlin
+player {
+    "Shynixn"
+}
+```
+
+```kotlin
 location {
     x = 1.0
     y = 2.0

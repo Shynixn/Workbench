@@ -1,9 +1,9 @@
 package unittest
 
-import com.github.shynixn.workbench.bukkit.common.dsl.log
+import com.github.shynixn.workbench.bukkit.common.dsl.location
+import com.github.shynixn.workbench.bukkit.common.dsl.player
 import com.github.shynixn.workbench.bukkit.common.implementation.LoggerImpl
 import org.junit.jupiter.api.Assertions.assertDoesNotThrow
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.util.logging.Logger
 

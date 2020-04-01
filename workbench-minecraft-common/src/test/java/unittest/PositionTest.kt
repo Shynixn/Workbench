@@ -1,8 +1,24 @@
 package unittest
 
+import com.github.shynixn.workbench.minecraft.common.dsl.Position
+import com.github.shynixn.workbench.minecraft.common.dsl.Position.Companion.blockX
+import com.github.shynixn.workbench.minecraft.common.dsl.Position.Companion.blockY
+import com.github.shynixn.workbench.minecraft.common.dsl.Position.Companion.blockZ
+import com.github.shynixn.workbench.minecraft.common.dsl.Position.Companion.pitch
+import com.github.shynixn.workbench.minecraft.common.dsl.Position.Companion.worldName
+import com.github.shynixn.workbench.minecraft.common.dsl.Position.Companion.x
+import com.github.shynixn.workbench.minecraft.common.dsl.Position.Companion.y
+import com.github.shynixn.workbench.minecraft.common.dsl.Position.Companion.yaw
+import com.github.shynixn.workbench.minecraft.common.dsl.Position.Companion.z
+import com.github.shynixn.workbench.minecraft.common.dsl.matches
+import com.github.shynixn.workbench.minecraft.common.dsl.matchesExcept
 import com.github.shynixn.workbench.minecraft.common.dsl.position
+import javafx.geometry.Pos
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
 
 /**
  * Created by Shynixn 2020.
@@ -208,5 +224,46 @@ class PositionTest {
 
         // Assert
         assertEquals(expectedDistance, distance)
+    }
+
+    /**
+     * Given
+     *      two positions
+     * When
+     *      match is called
+     * Then
+     *     a match should be determined
+     */
+    @Test
+    fun match_NewPositions_ShouldBeCalculatedCorrectly() {
+        // Arrange
+        val classUnderTest = position {
+            x = 4.0
+            y = 592.0
+            z = 30.0
+            yaw = 3.0
+            pitch = 2.0
+            worldName = "world"
+        }
+        val otherPosition = position {
+            x = -4.0
+            y = 25.0
+            z = 303.5
+            yaw = 3.0
+            pitch = 2.0
+            worldName = "world"
+        }
+
+        // Assert
+        assertNotEquals(classUnderTest, otherPosition)
+
+        assertTrue(classUnderTest.matches(otherPosition))
+        assertTrue(classUnderTest.matches(otherPosition, yaw, pitch))
+        assertFalse(classUnderTest.matches(otherPosition, x, y, z))
+        assertTrue(classUnderTest.matches(otherPosition, worldName))
+
+        assertFalse(classUnderTest.matchesExcept(otherPosition))
+        assertTrue(classUnderTest.matchesExcept(otherPosition, x, y, z, blockX, blockY, blockZ))
+        assertFalse(classUnderTest.matchesExcept(otherPosition, x, y))
     }
 }

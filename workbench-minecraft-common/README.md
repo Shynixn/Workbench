@@ -20,3 +20,16 @@ position {
     pitch = 5.0
 }
 ```
+
+```kotlin
+position {
+    x = 1.0
+    y = 2.0
+    z = 3.0
+}.matches(position {
+    x = 1.0
+    y = 2.0
+    z = 3.0
+}, Postion.x, Postion.y, Postion.z)
+```
+

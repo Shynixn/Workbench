@@ -7,6 +7,7 @@ import com.github.shynixn.workbench.minecraft.common.dsl.position
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Entity
+import org.bukkit.entity.Player
 import org.bukkit.util.EulerAngle
 import org.bukkit.util.Vector
 
@@ -52,6 +53,13 @@ fun log(f: Logger.() -> Unit) {
     val logger = LoggerImpl()
     f.invoke(logger)
     logger.log(plugin.logger)
+}
+
+/**
+ * Gets the player by the name.
+ */
+fun player(f: () -> String): Player {
+    return Bukkit.getPlayer(f.invoke())!!
 }
 
 /**

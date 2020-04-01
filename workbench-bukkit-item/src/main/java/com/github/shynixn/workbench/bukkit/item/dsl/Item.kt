@@ -1,6 +1,6 @@
-package com.github.shynixn.workbench.bukkit.common.dsl
+package com.github.shynixn.workbench.bukkit.item.dsl
 
-import org.bukkit.plugin.Plugin
+import kotlin.reflect.KProperty
 
 /**
  * Created by Shynixn 2020.
@@ -29,20 +29,50 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface WorkbenchResource {
-    /**
-     * Registers a new sub workBench resource. Gets immediately enabled if the parent
-     * workBench resource is enabled. Gets automatically disabled if the parent is disabled.
-     */
-    fun registerSubResource(workbenchResource: WorkbenchResource) {}
+interface Item {
+    companion object {
+        val name: KProperty<*> = Item::name
+        val amount: KProperty<*> = Item::amount
+        val dataValue: KProperty<*> = Item::dataValue
+        val displayName: KProperty<*> = Item::displayName
+        val lore: KProperty<*> = Item::lore
+        val skin: KProperty<*> = Item::skin
+        val nbtTag: KProperty<*> = Item::nbtTag
+        val all: List<KProperty<*>> = arrayListOf(name, amount, dataValue, displayName, lore, skin, nbtTag)
+    }
 
     /**
-     * Allocates all workBench resources.
+     * Name of the item.
      */
-    fun onEnable(plugin: Plugin)
+    var name: Any
 
     /**
-     * Frees all workBench resources.
+     * Amount of the item.
      */
-    fun onDisable()
+    var amount: Int
+
+    /**
+     * Data value of the item.
+     */
+    var dataValue: Int
+
+    /**
+     * DisplayName.
+     */
+    var displayName: String?
+
+    /**
+     * Lore of the item.
+     */
+    var lore: List<String>?
+
+    /**
+     * Skin of the item.
+     */
+    var skin: String?
+
+    /**
+     * Nbt tag description.
+     */
+    var nbtTag: String?
 }

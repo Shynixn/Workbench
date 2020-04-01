@@ -38,13 +38,6 @@ class AsyncWorkbenchResource : WorkbenchResource {
     var syncDispatcher: SyncCoroutineDispatcher? = null
 
     /**
-     * Registers a new sub workBench resource. Gets immediately enabled if the parent
-     * workBench resource is enabled. Gets automatically disabled if the parent is disabled.
-     */
-    override fun registerSubResource(workbenchResource: WorkbenchResource) {
-    }
-
-    /**
      * Allocates all workBench resources.
      */
     override fun onEnable(plugin: Plugin) {

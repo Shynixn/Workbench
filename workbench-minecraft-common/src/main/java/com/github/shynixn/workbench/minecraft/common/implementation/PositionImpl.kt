@@ -1,7 +1,12 @@
 package com.github.shynixn.workbench.minecraft.common.implementation
 
 import com.github.shynixn.workbench.minecraft.common.dsl.Position
+import com.github.shynixn.workbench.minecraft.common.dsl.Position.Companion.all
+import javafx.geometry.Pos
 import kotlin.math.sqrt
+import kotlin.reflect.KProperty
+import kotlin.streams.asStream
+import kotlin.streams.toList
 
 /**
  * Created by Shynixn 2020.

@@ -1,6 +1,7 @@
 package com.github.shynixn.workbench.minecraft.common.dsl
 
 import com.github.shynixn.workbench.minecraft.common.implementation.PositionImpl
+import kotlin.reflect.KProperty
 
 /**
  * Created by Shynixn 2020.
@@ -37,5 +38,42 @@ fun position(f: Position.() -> Unit): Position {
     val position = PositionImpl()
     f.invoke(position)
     return position
+}
+
+
+/**
+ * Compares if this position and the other position are the same in the given properties.
+ */
+fun Position.matches(position: Position, vararg properties: KProperty<*>): Boolean {
+    for (property in properties) {
+        if (property == Position.x && this.x != position.x) {
+            return false
+        } else if (property == Position.y && this.y != position.y) {
+            return false
+        } else if (property == Position.z && this.z != position.z) {
+            return false
+        } else if (property == Position.yaw && this.yaw != position.yaw) {
+            return false
+        } else if (property == Position.pitch && this.pitch != position.pitch) {
+            return false
+        } else if (property == Position.worldName && this.worldName != position.worldName) {
+            return false
+        } else if (property == Position.blockX && this.blockX != position.blockX) {
+            return false
+        } else if (property == Position.blockY && this.blockY != position.blockY) {
+            return false
+        } else if (property == Position.blockZ && this.blockZ != position.blockZ) {
+            return false
+        }
+    }
+
+    return true
+}
+
+/**
+ * Compares if this position and the other position are the same without the given properties.
+ */
+fun Position.matchesExcept(position: Position, vararg properties: KProperty<*>): Boolean {
+    return matches(position, *Position.all.asSequence().filter { e -> !properties.contains(e) }.toList().toTypedArray())
 }
 
