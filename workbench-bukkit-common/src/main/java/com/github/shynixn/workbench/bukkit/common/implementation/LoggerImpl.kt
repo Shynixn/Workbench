@@ -1,6 +1,7 @@
 package com.github.shynixn.workbench.bukkit.common.implementation
 
 import com.github.shynixn.workbench.bukkit.common.dsl.Logger
+import java.util.logging.Level
 
 /**
  * Created by Shynixn 2020.
@@ -34,6 +35,30 @@ class LoggerImpl : Logger {
     var warningMessage: String? = null
     var errorMessage: String? = null
     var throwable: Throwable? = null
+
+    /**
+     * Log message.
+     */
+    fun log(logger: java.util.logging.Logger) {
+        val logPair = when {
+            errorMessage != null -> {
+                Pair(Level.SEVERE, errorMessage!!)
+            }
+            infoMessage != null -> {
+                Pair(Level.INFO, infoMessage!!)
+            }
+            else -> {
+                Pair(Level.WARNING, warningMessage!!)
+            }
+        }
+
+        if (throwable != null) {
+            logger.log(logPair.first, logPair.second, throwable!!)
+        } else {
+            logger.log(logPair.first, logPair.second)
+        }
+    }
+
     /**
      * Logs an information message.
      */

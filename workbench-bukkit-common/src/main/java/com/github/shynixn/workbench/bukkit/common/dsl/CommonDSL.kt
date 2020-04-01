@@ -9,7 +9,6 @@ import org.bukkit.Location
 import org.bukkit.entity.Entity
 import org.bukkit.util.EulerAngle
 import org.bukkit.util.Vector
-import java.util.logging.Level
 
 /**
  * Created by Shynixn 2020.
@@ -52,24 +51,7 @@ fun log(f: Logger.() -> Unit) {
     val plugin = (workbenchResource as WorkBenchResourceImpl).plugin!!
     val logger = LoggerImpl()
     f.invoke(logger)
-
-    val logPair = when {
-        logger.errorMessage != null -> {
-            Pair(Level.SEVERE, logger.errorMessage!!)
-        }
-        logger.infoMessage != null -> {
-            Pair(Level.INFO, logger.infoMessage!!)
-        }
-        else -> {
-            Pair(Level.WARNING, logger.warningMessage!!)
-        }
-    }
-
-    if (logger.throwable != null) {
-        plugin.logger.log(logPair.first, logPair.second, logger.throwable!!)
-    } else {
-        plugin.logger.log(logPair.first, logPair.second)
-    }
+    logger.log(plugin.logger)
 }
 
 /**
