@@ -58,6 +58,13 @@ private fun registerIfNotRegistered() {
 }
 
 /**
+ * Tries to convert the given object to a material.
+ */
+fun Any.toMaterial(): Material {
+    return findMaterialFromDescriptor(this)
+}
+
+/**
  * Creates a new item object.
  */
 fun item(f: Item.() -> Unit): Item {
