@@ -36,4 +36,10 @@ fun onPlayerJoinEvent(event: PlayerJoinEvent) = launch {
 }
 ```
 
+```kotlin
+fun <S> onExecuteCommand(source: S, args: Array<out String>) = launch {
+
+}
+```
+
     

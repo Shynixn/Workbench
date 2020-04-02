@@ -34,6 +34,12 @@ player.sendMessage(red() + "Hello World!")
 ```
 
 ```kotlin
+Bukkit.getPluginManager().registerCommands("command", myCommandExecutor, plugin)
+Bukkit.getPluginManager().registerEvent(myListener, plugin)
+```
+
+
+```kotlin
 location {
     x = 1.0
     y = 2.0

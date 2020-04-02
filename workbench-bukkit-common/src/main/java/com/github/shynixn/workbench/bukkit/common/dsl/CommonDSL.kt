@@ -1,5 +1,6 @@
 package com.github.shynixn.workbench.bukkit.common.dsl
 
+import com.github.shynixn.workbench.bukkit.common.implementation.CommandExecutorImpl
 import com.github.shynixn.workbench.bukkit.common.implementation.LoggerImpl
 import com.github.shynixn.workbench.bukkit.common.implementation.WorkBenchResourceImpl
 import com.github.shynixn.workbench.minecraft.common.dsl.Position
@@ -8,6 +9,9 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
+import org.bukkit.plugin.Plugin
+import org.bukkit.plugin.PluginManager
+import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.util.EulerAngle
 import org.bukkit.util.Vector
 
@@ -75,6 +79,14 @@ val serverVersion: Version
  */
 fun findClazz(classPath: String): Class<*> {
     return Class.forName(classPath.replace("VERSION", serverVersion.bukkitId))
+}
+
+/**
+ * Registers a preconfigured command.
+ */
+fun PluginManager.registerCommands(command: String, commandExecutor: CommandExecutor, plugin: Plugin) {
+    require(plugin is JavaPlugin)
+    plugin.getCommand(command)!!.setExecutor(CommandExecutorImpl(commandExecutor))
 }
 
 /**

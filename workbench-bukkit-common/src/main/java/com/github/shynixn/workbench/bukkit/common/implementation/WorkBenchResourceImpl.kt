@@ -32,7 +32,7 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class WorkBenchResourceImpl : WorkbenchResource {
+internal class WorkBenchResourceImpl : WorkbenchResource {
     var plugin: Plugin? = null
     private val workBenches = HashSet<WorkbenchResource>()
     var serverVersion: Version = Version.VERSION_UNKNOWN
@@ -47,8 +47,6 @@ class WorkBenchResourceImpl : WorkbenchResource {
         if (plugin != null) {
             workbenchResource.onEnable(plugin!!)
         }
-
-        println(red() + "Hello World!")
     }
 
     /**

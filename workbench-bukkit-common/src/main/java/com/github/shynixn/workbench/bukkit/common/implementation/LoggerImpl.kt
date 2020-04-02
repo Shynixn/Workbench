@@ -30,7 +30,7 @@ import java.util.logging.Level
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class LoggerImpl : Logger {
+internal class LoggerImpl : Logger {
     var infoMessage: String? = null
     var warningMessage: String? = null
     var errorMessage: String? = null
