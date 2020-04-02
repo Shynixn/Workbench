@@ -1,6 +1,5 @@
 package unittest
 
-import com.github.shynixn.workbench.minecraft.common.dsl.Position
 import com.github.shynixn.workbench.minecraft.common.dsl.Position.Companion.blockX
 import com.github.shynixn.workbench.minecraft.common.dsl.Position.Companion.blockY
 import com.github.shynixn.workbench.minecraft.common.dsl.Position.Companion.blockZ
@@ -13,7 +12,6 @@ import com.github.shynixn.workbench.minecraft.common.dsl.Position.Companion.z
 import com.github.shynixn.workbench.minecraft.common.dsl.matches
 import com.github.shynixn.workbench.minecraft.common.dsl.matchesExcept
 import com.github.shynixn.workbench.minecraft.common.dsl.position
-import javafx.geometry.Pos
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import kotlin.test.assertFalse

@@ -1,10 +1,18 @@
 package com.github.shynixn.workbench.bukkit.item.dsl
 
+import com.github.shynixn.workbench.bukkit.common.dsl.findClazz
+import com.github.shynixn.workbench.bukkit.common.dsl.log
+import com.github.shynixn.workbench.bukkit.common.dsl.translateChatColors
 import com.github.shynixn.workbench.bukkit.common.dsl.workbenchResource
 import com.github.shynixn.workbench.bukkit.item.implementation.ItemImpl
 import com.github.shynixn.workbench.bukkit.item.implementation.ItemWorkbenchResource
+import com.mojang.authlib.GameProfile
+import com.mojang.authlib.properties.Property
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.SkullMeta
+import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder
+import java.util.*
 import kotlin.reflect.KProperty
 
 /**
@@ -59,12 +67,146 @@ fun item(f: Item.() -> Unit): Item {
 }
 
 /**
+ * Converts the object to an item.
+ */
+fun ItemStack.toItem(): Item {
+    val item = item {}
+    item.name = this.type.name
+    item.amount = this.amount
+    item.dataValue = this.durability.toInt()
+
+    if (this.itemMeta != null) {
+        item.displayName = this.itemMeta!!.displayName
+        item.lore = this.itemMeta!!.lore
+    }
+
+    item.skin = if (this.itemMeta != null && this.itemMeta is SkullMeta) {
+        val currentMeta = this.itemMeta as SkullMeta
+        val owner = currentMeta.owner
+
+        if (!owner.isNullOrEmpty()) {
+            owner
+        } else {
+            val cls = findClazz("org.bukkit.craftbukkit.VERSION.inventory.CraftMetaSkull")
+            val real = cls.cast(currentMeta)
+            val field = real.javaClass.getDeclaredField("profile")
+            field.isAccessible = true
+            val profile = field.get(real) as GameProfile?
+
+            if (profile == null) {
+                null
+            } else {
+                profile.properties.get("textures").toTypedArray()[0].value
+            }
+        }
+    } else {
+        null
+    }
+
+    val nmsItemStackClass = findClazz("net.minecraft.server.VERSION.ItemStack")
+    val craftItemStackClass = findClazz("org.bukkit.craftbukkit.VERSION.inventory.CraftItemStack")
+    val nmsCopyMethod = craftItemStackClass.getDeclaredMethod("asNMSCopy", ItemStack::class.java)
+    val getNBTTag = nmsItemStackClass.getDeclaredMethod("getTag")
+    val nmsItemStack = nmsCopyMethod.invoke(null, this)
+    val targetNbtTag = getNBTTag.invoke(nmsItemStack)
+
+    if (targetNbtTag != null) {
+        item.nbtTag = targetNbtTag.toString()
+    }
+
+    return item
+}
+
+/**
  * Converts the object to an itemStack.
  * Throws an exception if not correctly specified.
  */
+@Suppress("UNCHECKED_CAST")
 fun Item.toItemStack(): ItemStack {
     val material = findMaterialFromDescriptor(this.name)
-    throw NotImplementedError()
+    val itemStack = ItemStack(material, this.amount, this.dataValue.toShort())
+
+    if (itemStack.itemMeta != null) {
+        var currentMeta = itemStack.itemMeta
+
+        if (!skin.isNullOrEmpty() && currentMeta is SkullMeta) {
+            var newSkin = skin!!
+
+            if (newSkin.length > 32) {
+                val cls = findClazz("org.bukkit.craftbukkit.VERSION.inventory.CraftMetaSkull")
+                val real = cls.cast(currentMeta)
+                val field = real.javaClass.getDeclaredField("profile")
+                val newSkinProfile = GameProfile(UUID.randomUUID(), null)
+
+                if (newSkin.contains("textures.minecraft.net")) {
+                    if (!newSkin.startsWith("http://")) {
+                        newSkin = "http://$newSkin"
+                    }
+
+                    newSkin = Base64Coder.encodeString("{textures:{SKIN:{url:\"$newSkin\"}}}")
+                }
+
+                newSkinProfile.properties.put("textures", Property("textures", newSkin))
+                field.isAccessible = true
+                field.set(real, newSkinProfile)
+                currentMeta = SkullMeta::class.java.cast(real)
+            } else {
+                currentMeta.owner = newSkin
+            }
+        }
+
+        if (displayName != null) {
+            currentMeta!!.setDisplayName(displayName!!.translateChatColors())
+        }
+
+        if (lore != null) {
+            currentMeta!!.lore = lore!!.map { l -> l.translateChatColors() }
+        }
+
+        itemStack.itemMeta = currentMeta
+    }
+
+    if (nbtTag == null) {
+        return itemStack
+    }
+
+    val nmsItemStackClass = findClazz("net.minecraft.server.VERSION.ItemStack")
+    val craftItemStackClass = findClazz("org.bukkit.craftbukkit.VERSION.inventory.CraftItemStack")
+    val nmsCopyMethod = craftItemStackClass.getDeclaredMethod("asNMSCopy", ItemStack::class.java)
+    val nmsToBukkitMethod = craftItemStackClass.getDeclaredMethod("asBukkitCopy", nmsItemStackClass)
+    val nbtTagClass = findClazz("net.minecraft.server.VERSION.NBTTagCompound")
+    val getNBTTag = nmsItemStackClass.getDeclaredMethod("getTag")
+    val setNBTTag = nmsItemStackClass.getDeclaredMethod("setTag", nbtTagClass)
+
+    val nmsItemStack = nmsCopyMethod.invoke(null, itemStack)
+    var targetNbtTag = getNBTTag.invoke(nmsItemStack)
+
+    if (targetNbtTag == null) {
+        targetNbtTag = nbtTagClass.newInstance()
+    }
+
+    val compoundMapField = nbtTagClass.getDeclaredField("map")
+    compoundMapField.isAccessible = true
+    val targetNbtMap = compoundMapField.get(targetNbtTag) as MutableMap<Any?, Any?>
+
+    try {
+        val sourceNbtTag = findClazz("net.minecraft.server.VERSION.MojangsonParser")
+            .getDeclaredMethod("parse", String::class.java).invoke(null, nbtTag)
+        val sourceNbtMap = compoundMapField.get(sourceNbtTag) as MutableMap<Any?, Any?>
+
+        for (key in sourceNbtMap.keys) {
+            targetNbtMap[key] = sourceNbtMap[key]
+        }
+
+        setNBTTag.invoke(nmsItemStack, targetNbtTag)
+    } catch (e: Exception) {
+        log {
+            error { "Cannot parse NBT '$nbtTag'" }
+            throwable { e }
+        }
+    }
+
+    return nmsToBukkitMethod.invoke(null, nmsItemStack) as ItemStack
 }
 
 /**

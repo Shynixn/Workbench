@@ -1,6 +1,8 @@
 package com.github.shynixn.workbench.bukkit.common.implementation
 
-import com.github.shynixn.workbench.bukkit.common.dsl.WorkbenchResource
+import com.github.shynixn.workbench.bukkit.common.dsl.*
+import org.bukkit.Bukkit
+import org.bukkit.Server
 import org.bukkit.plugin.Plugin
 
 /**
@@ -33,6 +35,7 @@ import org.bukkit.plugin.Plugin
 class WorkBenchResourceImpl : WorkbenchResource {
     var plugin: Plugin? = null
     private val workBenches = HashSet<WorkbenchResource>()
+    var serverVersion: Version = Version.VERSION_UNKNOWN
 
     /**
      * Registers a new sub workBench resource. Gets immediately enabled if the parent
@@ -44,6 +47,8 @@ class WorkBenchResourceImpl : WorkbenchResource {
         if (plugin != null) {
             workbenchResource.onEnable(plugin!!)
         }
+
+        println(red() + "Hello World!")
     }
 
     /**
@@ -51,6 +56,7 @@ class WorkBenchResourceImpl : WorkbenchResource {
      */
     override fun onEnable(plugin: Plugin) {
         this.plugin = plugin
+        this.serverVersion = getCurrentServerVersion()
         workBenches.forEach { e -> e.onEnable(plugin) }
     }
 
@@ -61,5 +67,29 @@ class WorkBenchResourceImpl : WorkbenchResource {
         workBenches.forEach { e -> e.onDisable() }
         workBenches.clear()
         this.plugin = null
+    }
+
+    /**
+     * Gets the server version this plugin is currently running on.
+     */
+    private fun getCurrentServerVersion(): Version {
+        try {
+            if ((Bukkit.getServer() as Server?) == null || Bukkit.getServer().javaClass.getPackage() == null) {
+                return Version.VERSION_UNKNOWN
+            }
+
+            val version = Bukkit.getServer().javaClass.getPackage().name.replace(".", ",").split(",")[3]
+
+            for (versionSupport in Version.values()) {
+                if (versionSupport.bukkitId == version) {
+                    return versionSupport
+                }
+            }
+
+        } catch (e: Exception) {
+            // Ignore parsing exceptions.
+        }
+
+        return Version.VERSION_UNKNOWN
     }
 }

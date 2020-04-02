@@ -63,6 +63,42 @@ fun player(f: () -> String): Player {
 }
 
 /**
+ * Gets the current server version.
+ */
+val serverVersion: Version
+    get() {
+        return (workbenchResource as WorkBenchResourceImpl).serverVersion
+    }
+
+/**
+ * Finds an NMS class from the current version.
+ */
+fun findClazz(classPath: String): Class<*> {
+    return Class.forName(classPath.replace("VERSION", serverVersion.bukkitId))
+}
+
+/**
+ * Translates the given chatColor.
+ */
+fun String.translateChatColors(): String {
+    return ChatColor.translateChatColorCodes('&', this)
+}
+
+/**
+ * Strips the given chatColor.
+ */
+fun String.stripChatColors(): String {
+    return ChatColor.stripChatColors(this)
+}
+
+/**
+ * Color.
+ */
+fun red(): String {
+    return ChatColor.RED.toString()
+}
+
+/**
  * Creates a new location.
  */
 fun location(f: Position.() -> Unit): Location {

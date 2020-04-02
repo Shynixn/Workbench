@@ -1,7 +1,6 @@
 package com.github.shynixn.workbench.bukkit.item.implementation
 
 import com.github.shynixn.workbench.bukkit.item.dsl.Item
-import kotlin.reflect.KProperty
 
 /**
  * Created by Shynixn 2020.

@@ -26,6 +26,14 @@ player {
 ```
 
 ```kotlin
+findClazz("net.minecraft.server.VERSION.ItemStack")
+```
+
+```kotlin
+player.sendMessage(red() + "Hello World!")
+```
+
+```kotlin
 location {
     x = 1.0
     y = 2.0
