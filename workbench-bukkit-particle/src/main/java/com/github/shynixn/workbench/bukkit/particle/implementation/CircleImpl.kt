@@ -1,7 +1,11 @@
-package com.github.shynixn.workbench.bukkit.particle.dsl
+package com.github.shynixn.workbench.bukkit.particle.implementation
 
-import com.github.shynixn.workbench.bukkit.particle.implementation.CircleImpl
-import com.github.shynixn.workbench.bukkit.particle.implementation.ParticleImpl
+import com.github.shynixn.workbench.bukkit.particle.dsl.Circle
+import com.github.shynixn.workbench.bukkit.particle.dsl.Particle
+import com.github.shynixn.workbench.minecraft.common.dsl.Position
+import com.github.shynixn.workbench.minecraft.common.dsl.position
+import org.bukkit.Location
+import org.bukkit.entity.Player
 import java.util.stream.Stream
 
 /**
@@ -31,28 +35,36 @@ import java.util.stream.Stream
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+class CircleImpl : Circle {
+    /**
+     * Stream of particle being used.
+     */
+    override var particles: Stream<Particle> = Stream.empty()
 
-/**
- * Creates a new particle.
- */
-fun particle(f: Particle.() -> Unit): Particle {
-    val particle = ParticleImpl()
-    f.invoke(particle)
-    return particle
-}
+    /**
+     * Radius of the circle.
+     */
+    override var radius: Double = 1.0
+    /**
+     * X,Y,Z Axis rotation.
+     */
+    override var rotation: Position = position {
+        x = 0.0
+        y = 1.0
+        z = 0.0
+    }
 
-/**
- * Alternates between the given particles.
- */
-fun alternate(vararg particles: Particle): Stream<Particle> {
-    return Stream.of(*particles)
-}
+    /**
+     * Plays the particle.
+     */
+    override fun play(location: Location, vararg players: Player) {
+        play(location, players.toList())
+    }
 
-/**
- * Creates a new particle circle.
- */
-fun circle(f: Circle.() -> Unit): Circle {
-    val circle = CircleImpl()
-    f.invoke(circle)
-    return circle
+    /**
+     * Plays the particle.
+     */
+    override fun play(location: Location, players: Collection<Player>) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }

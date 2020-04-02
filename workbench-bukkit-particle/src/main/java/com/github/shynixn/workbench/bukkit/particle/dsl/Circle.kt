@@ -1,7 +1,8 @@
 package com.github.shynixn.workbench.bukkit.particle.dsl
 
-import com.github.shynixn.workbench.bukkit.particle.implementation.CircleImpl
-import com.github.shynixn.workbench.bukkit.particle.implementation.ParticleImpl
+import com.github.shynixn.workbench.minecraft.common.dsl.Position
+import org.bukkit.Location
+import org.bukkit.entity.Player
 import java.util.stream.Stream
 
 /**
@@ -31,28 +32,29 @@ import java.util.stream.Stream
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+interface Circle {
+    /**
+     * Stream of particle being used.
+     */
+    var particles: Stream<Particle>
 
-/**
- * Creates a new particle.
- */
-fun particle(f: Particle.() -> Unit): Particle {
-    val particle = ParticleImpl()
-    f.invoke(particle)
-    return particle
-}
+    /**
+     * Radius of the circle.
+     */
+    var radius: Double
 
-/**
- * Alternates between the given particles.
- */
-fun alternate(vararg particles: Particle): Stream<Particle> {
-    return Stream.of(*particles)
-}
+    /**
+     * X,Y,Z Axis rotation.
+     */
+    var rotation: Position
 
-/**
- * Creates a new particle circle.
- */
-fun circle(f: Circle.() -> Unit): Circle {
-    val circle = CircleImpl()
-    f.invoke(circle)
-    return circle
+    /**
+     * Plays the particle.
+     */
+    fun play(location: Location, vararg players: Player)
+
+    /**
+     * Plays the particle.
+     */
+    fun play(location: Location, players: Collection<Player>)
 }
