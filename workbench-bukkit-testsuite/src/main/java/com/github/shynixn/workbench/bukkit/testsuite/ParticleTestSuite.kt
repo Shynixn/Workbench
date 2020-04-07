@@ -1,6 +1,7 @@
 package com.github.shynixn.workbench.bukkit.testsuite
 
 import com.github.shynixn.workbench.bukkit.particle.dsl.circle
+import com.github.shynixn.workbench.bukkit.particle.dsl.line
 import com.github.shynixn.workbench.bukkit.particle.dsl.particle
 import kotlinx.coroutines.delay
 import org.bukkit.entity.Player
@@ -35,9 +36,19 @@ import org.bukkit.entity.Player
 class ParticleTestSuite {
     suspend fun play(player: Player) {
         val location = player.location.add(2.0, 0.5, 0.0)
+        val locationB = player.location.add(3.0, -1.0, 3.0)
+
+        line {
+            particle {
+                name = "REDSTONE"
+                colorRed = 255
+                colorBlue = 0
+                colorGreen = 255
+            }
+        }.play(location, locationB, player)
 
 
-        circle {
+     /*  circle {
                density = 2.0
                radius = 5.0
                circle {
@@ -62,7 +73,7 @@ class ParticleTestSuite {
                delay {
                    5000
                }
-           }.play(location, player)
+           }.play(location, player)*/
 
         /* circle {
              density = 180.0

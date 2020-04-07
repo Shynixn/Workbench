@@ -1,6 +1,7 @@
 package com.github.shynixn.workbench.bukkit.particle.dsl
 
 import com.github.shynixn.workbench.bukkit.particle.implementation.CircleImpl
+import com.github.shynixn.workbench.bukkit.particle.implementation.LineImpl
 import com.github.shynixn.workbench.bukkit.particle.implementation.ParticleImpl
 import java.util.stream.Stream
 
@@ -46,6 +47,15 @@ fun particle(f: Particle.() -> Unit): Particle {
  */
 fun alternate(vararg particles: Particle): Stream<Particle> {
     return Stream.of(*particles)
+}
+
+/**
+ * Creates a new particle line.
+ */
+fun line(f: Line.() -> Unit): Line {
+    val line = LineImpl()
+    f.invoke(line)
+    return line
 }
 
 /**

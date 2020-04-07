@@ -1,8 +1,9 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.github.shynixn.workbench.bukkit.particle.implementation
 
-import com.github.shynixn.workbench.bukkit.particle.dsl.Circle
+import com.github.shynixn.workbench.bukkit.common.dsl.toPosition
 import com.github.shynixn.workbench.bukkit.particle.dsl.Line
-import com.github.shynixn.workbench.bukkit.particle.dsl.Particle
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
@@ -43,8 +44,8 @@ class LineImpl : GroupImpl(), Line {
      * Skips the given distance.
      */
     override fun skipDistance(f: () -> Double): Line {
-        val angle = f.invoke()
-        actions.add(1 to angle)
+        val distance = f.invoke()
+        actions.add(1 to distance)
         return this
     }
 
@@ -59,6 +60,60 @@ class LineImpl : GroupImpl(), Line {
      * Plays the particle.
      */
     override fun play(begin: Location, end: Location, players: Collection<Player>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val calculatedSequence = sequence {
+            val distance = begin.distance(end)
+            val adder = end.subtract(begin).toVector().normalize().multiply(0.1)
+            val normalizedVector = adder.clone()
+            val amountOfActions = distance / adder.length()
+            var i = 0
+
+            while (i < amountOfActions) {
+                val calculatedLocation = Location(
+                    begin.world,
+                    begin.x + normalizedVector.x,
+                    begin.y + normalizedVector.y,
+                    begin.z + normalizedVector.z
+                )
+                println(calculatedLocation.toPosition())
+                yield(calculatedLocation)
+
+                for (j in 0 until (1.0 / density).toInt()) {
+                    normalizedVector.add(adder)
+                    i++
+                }
+            }
+        }
+
+        val actionSequence = sequence {
+            var index = 0
+            val normalizedVector = end.subtract(begin).toVector().normalize().multiply(0.1)
+            val vectorLength =  normalizedVector.length()
+
+            while (true) {
+                if (index >= actions.size) {
+                    index = 0
+                }
+
+                val action = actions[index]
+
+                if (action.first == 0) {
+                    yield(action.second as ((Location, Collection<Player>) -> Unit))
+                } else if (action.first == 1) {
+                    val skipDistance = action.second as Double
+                    val skipActions = (skipDistance / vectorLength).toInt()
+                    val emptyAction = { _: Location, _: Collection<Player> -> Unit }
+
+                    for (i in 0 until skipActions) {
+                        yield(emptyAction)
+                    }
+                }
+
+                index++
+            }
+        }
+
+        calculatedSequence.zip(actionSequence).forEach { zipItem ->
+            zipItem.second.invoke(zipItem.first, players)
+        }
     }
 }
