@@ -1,8 +1,5 @@
 package com.github.shynixn.workbench.bukkit.particle.dsl
 
-import org.bukkit.Location
-import org.bukkit.entity.Player
-
 /**
  * Created by Shynixn 2020.
  * <p>
@@ -40,6 +37,11 @@ interface Group {
      * Adds a new circle to this group.
      */
     fun circle(f: Circle.() -> Unit)
+
+    /**
+     * Adds a line to this group.
+     */
+    fun line(f: Line.() -> Unit)
 
     /**
      * Adds a new delay to this group.

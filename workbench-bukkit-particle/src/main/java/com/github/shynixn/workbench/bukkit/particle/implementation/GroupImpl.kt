@@ -5,6 +5,7 @@ package com.github.shynixn.workbench.bukkit.particle.implementation
 import com.github.shynixn.workbench.bukkit.async.dsl.async
 import com.github.shynixn.workbench.bukkit.particle.dsl.Circle
 import com.github.shynixn.workbench.bukkit.particle.dsl.Group
+import com.github.shynixn.workbench.bukkit.particle.dsl.Line
 import com.github.shynixn.workbench.bukkit.particle.dsl.Particle
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -50,6 +51,17 @@ abstract class GroupImpl : Group {
         f.invoke(particle)
         actions.add(0 to { location: Location, players: Collection<Player> ->
             particle.play(location, players)
+        })
+    }
+
+    /**
+     * Adds a line to this group.
+     */
+    override fun line(f: Line.() -> Unit) {
+        val line = LineImpl()
+        f.invoke(line)
+        actions.add(0 to { location: Location, players: Collection<Player> ->
+            line.play(location, players)
         })
     }
 

@@ -2,8 +2,11 @@
 
 package com.github.shynixn.workbench.bukkit.particle.implementation
 
+import com.github.shynixn.workbench.bukkit.common.dsl.toLocation
 import com.github.shynixn.workbench.bukkit.common.dsl.toPosition
 import com.github.shynixn.workbench.bukkit.particle.dsl.Line
+import com.github.shynixn.workbench.minecraft.common.dsl.Position
+import com.github.shynixn.workbench.minecraft.common.dsl.position
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
@@ -36,9 +39,24 @@ import org.bukkit.entity.Player
  */
 class LineImpl : GroupImpl(), Line {
     /**
+     * Direction vector.
+     */
+    private var directionVector: Position = position { }
+
+    /**
      * Density in percentage.
      */
     override var density: Double = 1.0
+
+    /**
+     * Direction of the line.
+     */
+    override fun direction(f: Position.() -> Unit): Line {
+        val position = position { }
+        f.invoke(position)
+        directionVector = position
+        return this
+    }
 
     /**
      * Skips the given distance.
@@ -52,27 +70,29 @@ class LineImpl : GroupImpl(), Line {
     /**
      * Plays the particle.
      */
-    override fun play(begin: Location, end: Location, vararg players: Player) {
-        play(begin, end, players.toList())
+    override fun play(location: Location, vararg players: Player) {
+        play(location, players.toList())
     }
 
     /**
      * Plays the particle.
      */
-    override fun play(begin: Location, end: Location, players: Collection<Player>) {
+    override fun play(location: Location, players: Collection<Player>) {
+        val end = location.clone().add(directionVector.toLocation(location.world!!.name))
+
         val calculatedSequence = sequence {
-            val distance = begin.distance(end)
-            val adder = end.subtract(begin).toVector().normalize().multiply(0.1)
+            val distance = location.distance(end)
+            val adder = end.subtract(location).toVector().normalize().multiply(0.1)
             val normalizedVector = adder.clone()
             val amountOfActions = distance / adder.length()
             var i = 0
 
             while (i < amountOfActions) {
                 val calculatedLocation = Location(
-                    begin.world,
-                    begin.x + normalizedVector.x,
-                    begin.y + normalizedVector.y,
-                    begin.z + normalizedVector.z
+                    location.world,
+                    location.x + normalizedVector.x,
+                    location.y + normalizedVector.y,
+                    location.z + normalizedVector.z
                 )
                 println(calculatedLocation.toPosition())
                 yield(calculatedLocation)
@@ -86,8 +106,8 @@ class LineImpl : GroupImpl(), Line {
 
         val actionSequence = sequence {
             var index = 0
-            val normalizedVector = end.subtract(begin).toVector().normalize().multiply(0.1)
-            val vectorLength =  normalizedVector.length()
+            val normalizedVector = end.subtract(location).toVector().normalize().multiply(0.1)
+            val vectorLength = normalizedVector.length()
 
             while (true) {
                 if (index >= actions.size) {

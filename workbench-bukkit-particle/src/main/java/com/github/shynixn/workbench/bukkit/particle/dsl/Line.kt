@@ -1,5 +1,6 @@
 package com.github.shynixn.workbench.bukkit.particle.dsl
 
+import com.github.shynixn.workbench.minecraft.common.dsl.Position
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
@@ -37,6 +38,11 @@ interface Line : Group {
     var density: Double
 
     /**
+     * Direction of the line.
+     */
+    fun direction(f: Position.() -> Unit) : Line
+
+    /**
      * Skips the given distance.
      */
     fun skipDistance(f: () -> Double): Line
@@ -44,10 +50,10 @@ interface Line : Group {
     /**
      * Plays the particle.
      */
-    fun play(begin: Location, end: Location, vararg players: Player)
+    fun play(location: Location, vararg players: Player)
 
     /**
      * Plays the particle.
      */
-    fun play(begin: Location, end: Location, players: Collection<Player>)
+    fun play(location: Location, players: Collection<Player>)
 }

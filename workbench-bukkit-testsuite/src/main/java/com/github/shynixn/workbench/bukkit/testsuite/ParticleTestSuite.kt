@@ -36,9 +36,29 @@ import org.bukkit.entity.Player
 class ParticleTestSuite {
     suspend fun play(player: Player) {
         val location = player.location.add(3.0, 0.5, -3.0)
-        val locationB = player.location.add(3.0, 0.5, 3.0)
 
-       /* line {
+        circle {
+            line {
+                direction {
+                    x = 0.0
+                    y = 5.0
+                    z = 0.0
+                }
+                particle {
+                    name = "REDSTONE"
+                    colorRed = 0
+                    colorBlue = 255
+                    colorGreen = 0
+                }
+            }
+        }.play(location, player)
+
+   /*     line {
+            direction {
+                x = 0.0
+                y = 0.0
+                z = 6.0
+            }
             particle {
                 name = "REDSTONE"
                 colorRed = 255
@@ -48,35 +68,35 @@ class ParticleTestSuite {
             skipDistance {
                 1.0
             }
-        }.play(location, locationB, player)*/
+        }.play(location, player)*/
 
 
-     /*  circle {
-               density = 2.0
-               radius = 5.0
-               circle {
-                   density = 1.0
-                   radius = 1.0
-                   particle {
-                       name = "REDSTONE"
-                       colorRed = 255
-                       colorBlue = 0
-                       colorGreen = 255
-                   }
-               }
-               particle {
-                   name = "REDSTONE"
-                   colorRed = 0
-                   colorBlue = 255
-                   colorGreen = 0
-               }
-               skipAngle {
-                   60.0
-               }
-               delay {
-                   5000
-               }
-           }.play(location, player)*/
+        /*  circle {
+                  density = 2.0
+                  radius = 5.0
+                  circle {
+                      density = 1.0
+                      radius = 1.0
+                      particle {
+                          name = "REDSTONE"
+                          colorRed = 255
+                          colorBlue = 0
+                          colorGreen = 255
+                      }
+                  }
+                  particle {
+                      name = "REDSTONE"
+                      colorRed = 0
+                      colorBlue = 255
+                      colorGreen = 0
+                  }
+                  skipAngle {
+                      60.0
+                  }
+                  delay {
+                      5000
+                  }
+              }.play(location, player)*/
 
         /* circle {
              density = 180.0
@@ -140,14 +160,14 @@ class ParticleTestSuite {
                colorGreen = 0
            }.play(location, player)*/
 
-     /*   circle {
-            particle {
-                name = "REDSTONE"
-                colorRed = 0
-                colorBlue = 255
-                colorGreen = 0
-            }
-        }.play(location, player)*/
+        /*   circle {
+               particle {
+                   name = "REDSTONE"
+                   colorRed = 0
+                   colorBlue = 255
+                   colorGreen = 0
+               }
+           }.play(location, player)*/
 
 
     }
