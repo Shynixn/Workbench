@@ -46,7 +46,7 @@ interface Circle {
     /**
      * Density.
      */
-    var density : Double
+    var density: Double
 
     /**
      * Adds a new particle to this circle.
@@ -54,9 +54,19 @@ interface Circle {
     fun particle(f: Particle.() -> Unit): Circle
 
     /**
+     * Adds a new circle to this circle.
+     */
+    fun circle(f: Circle.() -> Unit): Circle
+
+    /**
      * Adds a new delay to this circle.
      */
     fun delay(f: () -> Int): Circle
+
+    /**
+     * Skips the given angle.
+     */
+    fun skipAngle(f: () -> Double): Circle
 
     /**
      * Plays the particle.

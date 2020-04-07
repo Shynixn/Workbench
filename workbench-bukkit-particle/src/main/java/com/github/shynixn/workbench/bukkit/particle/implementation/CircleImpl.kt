@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.github.shynixn.workbench.bukkit.particle.implementation
 
 import com.github.shynixn.workbench.bukkit.async.dsl.async
@@ -43,7 +45,7 @@ class CircleImpl : Circle {
     /**
      * Ordered list of actions.
      */
-    private val actions: MutableList<Pair<Byte, suspend (location: Location, Collection<Player>) -> Unit>> = ArrayList()
+    private val actions: MutableList<Pair<Int, Any>> = ArrayList()
 
     /**
      * Radius of the circle.
@@ -68,8 +70,20 @@ class CircleImpl : Circle {
     override fun particle(f: Particle.() -> Unit): Circle {
         val particle = ParticleImpl()
         f.invoke(particle)
-        actions.add(0.toByte() to { location, players ->
+        actions.add(0 to { location: Location, players: Collection<Player> ->
             particle.play(location, players)
+        })
+        return this
+    }
+
+    /**
+     * Adds a new circle to this circle.
+     */
+    override fun circle(f: Circle.() -> Unit): Circle {
+        val circle = CircleImpl()
+        f.invoke(circle)
+        actions.add(0 to { location: Location, players: Collection<Player> ->
+            circle.play(location, players)
         })
         return this
     }
@@ -79,9 +93,20 @@ class CircleImpl : Circle {
      */
     override fun delay(f: () -> Int): Circle {
         val delayAmount = f.invoke().toLong()
-        actions.add(1.toByte() to { _, _ ->
-            delay(delayAmount)
+        actions.add(0 to { _: Location, _: Collection<Player> ->
+            async {
+                delay(delayAmount)
+            }
         })
+        return this
+    }
+
+    /**
+     * Skips the given angle.
+     */
+    override fun skipAngle(f: () -> Double): Circle {
+        val angle = f.invoke()
+        actions.add(1 to angle)
         return this
     }
 
@@ -114,18 +139,32 @@ class CircleImpl : Circle {
 
         val actionSequence = sequence {
             var index = 0
+            val adder = 360.0 / density
             while (true) {
                 if (index >= actions.size) {
                     index = 0
                 }
 
-                yield(actions[index].second)
+                val action = actions[index]
+
+                if (action.first == 0) {
+                    yield(action.second as ((Location, Collection<Player>) -> Unit))
+                } else if (action.first == 1) {
+                    val skipAngle = action.second as Double
+                    val skipActions = (skipAngle / adder).toInt()
+                    val emptyAction = { _: Location, _: Collection<Player> -> Unit }
+
+                    for (i in 0 until skipActions) {
+                        yield(emptyAction)
+                    }
+                }
+
                 index++
             }
         }
 
         calculatedSequence.zip(actionSequence).forEach { zipItem ->
-            zipItem.second.invoke(zipItem.first, players)
+            val nextAngle = zipItem.second.invoke(zipItem.first, players)
         }
     }
 }

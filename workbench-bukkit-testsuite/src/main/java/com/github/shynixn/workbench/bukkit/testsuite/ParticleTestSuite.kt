@@ -33,26 +33,37 @@ import org.bukkit.entity.Player
  * SOFTWARE.
  */
 class ParticleTestSuite {
-    suspend fun play(player : Player) {
+    suspend fun play(player: Player) {
         val location = player.location.add(2.0, 0.5, 0.0)
-     /*   particle {
-            name = "REDSTONE"
-            colorRed = 0
-            colorBlue = 255
-            colorGreen = 0
-        }.play(location, player)*/
 
-    /*   circle {
+
+        circle {
+            density = 360.0 * 2
+            radius = 5.0
+            circle {
+                density = 360.0
+                radius = 1.0
+                particle {
+                    name = "REDSTONE"
+                    colorRed = 255
+                    colorBlue = 0
+                    colorGreen = 255
+                }
+            }
             particle {
                 name = "REDSTONE"
                 colorRed = 0
                 colorBlue = 255
                 colorGreen = 0
             }
-        }.play(location, player)*/
+            skipAngle {
+                60.0
+            }
+        }.play(location, player)
 
-
-        circle {
+       /* circle {
+            density = 180.0
+            radius = 5.0
             particle {
                 name = "REDSTONE"
                 colorRed = 0
@@ -60,9 +71,67 @@ class ParticleTestSuite {
                 colorGreen = 0
             }
             delay {
-                50
+                5
             }
-        }.play(location, player)
+            circle {
+                density = 360.0
+                radius = 1.0
+                particle {
+                    name = "REDSTONE"
+                    colorRed = 0
+                    colorBlue = 0
+                    colorGreen = 255
+                }
+            }
+            skipAngle {
+                60.0
+            }
+            delay {
+                5
+            }
+        }.play(location, player)*/
+
+
+        /*circle {
+            density = 180.0
+            radius = 10.0
+            particle {
+                name = "REDSTONE"
+                colorRed = 0
+                colorBlue = 255
+                colorGreen = 0
+            }
+            delay {
+                5
+            }
+            particle {
+                name = "REDSTONE"
+                colorRed = 0
+                colorBlue = 0
+                colorGreen = 255
+            }
+            delay {
+                5
+            }
+        }.play(location, player)*/
+
+
+        /*   particle {
+               name = "REDSTONE"
+               colorRed = 0
+               colorBlue = 255
+               colorGreen = 0
+           }.play(location, player)*/
+
+        /*   circle {
+                particle {
+                    name = "REDSTONE"
+                    colorRed = 0
+                    colorBlue = 255
+                    colorGreen = 0
+                }
+            }.play(location, player)*/
+
 
     }
 }
