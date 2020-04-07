@@ -38,9 +38,19 @@ interface Line : Group {
     var density: Double
 
     /**
-     * Direction of the line.
+     * X Distance.
      */
-    fun direction(f: Position.() -> Unit) : Line
+    var x : Double
+
+    /**
+     * Y Distance.
+     */
+    var y : Double
+
+    /**
+     * Z Distance.
+     */
+    var z : Double
 
     /**
      * Skips the given distance.

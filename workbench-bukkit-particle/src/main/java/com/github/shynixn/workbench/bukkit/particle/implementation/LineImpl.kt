@@ -47,16 +47,36 @@ class LineImpl : GroupImpl(), Line {
      * Density in percentage.
      */
     override var density: Double = 1.0
-
     /**
-     * Direction of the line.
+     * X Distance.
      */
-    override fun direction(f: Position.() -> Unit): Line {
-        val position = position { }
-        f.invoke(position)
-        directionVector = position
-        return this
-    }
+    override var x: Double
+        get() {
+            return directionVector.x
+        }
+        set(value) {
+            directionVector.x = value
+        }
+    /**
+     * Y Distance.
+     */
+    override var y: Double
+        get() {
+            return directionVector.y
+        }
+        set(value) {
+            directionVector.y = value
+        }
+    /**
+     * Z Distance.
+     */
+    override var z: Double
+        get() {
+            return directionVector.z
+        }
+        set(value) {
+            directionVector.z = value
+        }
 
     /**
      * Skips the given distance.

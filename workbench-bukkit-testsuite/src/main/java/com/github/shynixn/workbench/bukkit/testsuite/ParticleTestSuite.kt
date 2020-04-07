@@ -35,40 +35,45 @@ import org.bukkit.entity.Player
  */
 class ParticleTestSuite {
     suspend fun play(player: Player) {
-        val location = player.location.add(3.0, 0.5, -3.0)
+        val location = player.location.add(2.0, -1.0, 0.0)
 
         circle {
             line {
-                direction {
-                    x = 0.0
-                    y = 5.0
-                    z = 0.0
-                }
-                particle {
+                x = 0.0
+                y = 5.0
+                z = 0.0
+                particle(2) {
                     name = "REDSTONE"
                     colorRed = 0
                     colorBlue = 255
                     colorGreen = 0
                 }
+                particle(4) {
+                    name = "REDSTONE"
+                    colorRed = 255
+                    colorBlue = 0
+                    colorGreen = 255
+                }
+                delay { 5000 }
             }
         }.play(location, player)
 
-   /*     line {
-            direction {
-                x = 0.0
-                y = 0.0
-                z = 6.0
-            }
-            particle {
-                name = "REDSTONE"
-                colorRed = 255
-                colorBlue = 0
-                colorGreen = 0
-            }
-            skipDistance {
-                1.0
-            }
-        }.play(location, player)*/
+        /*     line {
+                 direction {
+                     x = 0.0
+                     y = 0.0
+                     z = 6.0
+                 }
+                 particle {
+                     name = "REDSTONE"
+                     colorRed = 255
+                     colorBlue = 0
+                     colorGreen = 0
+                 }
+                 skipDistance {
+                     1.0
+                 }
+             }.play(location, player)*/
 
 
         /*  circle {

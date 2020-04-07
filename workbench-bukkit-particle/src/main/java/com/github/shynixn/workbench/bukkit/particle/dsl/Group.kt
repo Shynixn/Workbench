@@ -31,20 +31,20 @@ interface Group {
     /**
      * Adds a new particle to this group.
      */
-    fun particle(f: Particle.() -> Unit)
+    fun particle(amount : Int = 1, f: Particle.() -> Unit)
 
     /**
      * Adds a new circle to this group.
      */
-    fun circle(f: Circle.() -> Unit)
+    fun circle(amount : Int = 1, f: Circle.() -> Unit)
 
     /**
      * Adds a line to this group.
      */
-    fun line(f: Line.() -> Unit)
+    fun line(amount : Int = 1, f: Line.() -> Unit)
 
     /**
      * Adds a new delay to this group.
      */
-    fun delay(f: () -> Int)
+    fun delay(amount : Int = 1, f: () -> Int)
 }

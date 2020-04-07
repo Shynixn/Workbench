@@ -46,45 +46,53 @@ abstract class GroupImpl : Group {
     /**
      * Adds a new particle to this group.
      */
-    override fun particle(f: Particle.() -> Unit) {
+    override fun particle(amount: Int, f: Particle.() -> Unit) {
         val particle = ParticleImpl()
         f.invoke(particle)
-        actions.add(0 to { location: Location, players: Collection<Player> ->
-            particle.play(location, players)
-        })
+        for (i in 0 until amount) {
+            actions.add(0 to { location: Location, players: Collection<Player> ->
+                particle.play(location, players)
+            })
+        }
     }
 
     /**
      * Adds a line to this group.
      */
-    override fun line(f: Line.() -> Unit) {
+    override fun line(amount: Int, f: Line.() -> Unit) {
         val line = LineImpl()
         f.invoke(line)
-        actions.add(0 to { location: Location, players: Collection<Player> ->
-            line.play(location, players)
-        })
+        for (i in 0 until amount) {
+            actions.add(0 to { location: Location, players: Collection<Player> ->
+                line.play(location, players)
+            })
+        }
     }
 
     /**
      * Adds a new circle to this group.
      */
-    override fun circle(f: Circle.() -> Unit) {
+    override fun circle(amount: Int, f: Circle.() -> Unit) {
         val circle = CircleImpl()
         f.invoke(circle)
-        actions.add(0 to { location: Location, players: Collection<Player> ->
-            circle.play(location, players)
-        })
+        for (i in 0 until amount) {
+            actions.add(0 to { location: Location, players: Collection<Player> ->
+                circle.play(location, players)
+            })
+        }
     }
 
     /**
      * Adds a new delay to this group.
      */
-    override fun delay(f: () -> Int) {
+    override fun delay(amount: Int, f: () -> Int) {
         val delayAmount = f.invoke().toLong()
-        actions.add(0 to { _: Location, _: Collection<Player> ->
-            async {
-                kotlinx.coroutines.delay(delayAmount)
-            }
-        })
+        for (i in 0 until amount) {
+            actions.add(0 to { _: Location, _: Collection<Player> ->
+                async {
+                    kotlinx.coroutines.delay(delayAmount)
+                }
+            })
+        }
     }
 }
