@@ -1,6 +1,8 @@
-package com.github.shynixn.workbench.bukkit.particle.dsl
+package com.github.shynixn.workbench.bukkit.particle.implementation
 
-import com.github.shynixn.workbench.minecraft.common.dsl.Position
+import com.github.shynixn.workbench.bukkit.particle.dsl.Circle
+import com.github.shynixn.workbench.bukkit.particle.dsl.Line
+import com.github.shynixn.workbench.bukkit.particle.dsl.Particle
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
@@ -31,34 +33,32 @@ import org.bukkit.entity.Player
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface Circle : Group {
-    /**
-     * Radius of the circle.
-     */
-    var radius: Double
-
-    /**
-     * X,Y,Z Axis rotation.
-     */
-    var rotation: Position
-
+class LineImpl : GroupImpl(), Line {
     /**
      * Density in percentage.
      */
-    var density: Double
+    override var density: Double = 1.0
 
     /**
-     * Skips the given angle.
+     * Skips the given distance.
      */
-    fun skipAngle(f: () -> Double): Circle
+    override fun skipDistance(f: () -> Double): Line {
+        val angle = f.invoke()
+        actions.add(1 to angle)
+        return this
+    }
 
     /**
      * Plays the particle.
      */
-    fun play(location: Location, vararg players: Player)
+    override fun play(begin: Location, end: Location, vararg players: Player) {
+        play(begin, end, players.toList())
+    }
 
     /**
      * Plays the particle.
      */
-    fun play(location: Location, players: Collection<Player>)
+    override fun play(begin: Location, end: Location, players: Collection<Player>) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }

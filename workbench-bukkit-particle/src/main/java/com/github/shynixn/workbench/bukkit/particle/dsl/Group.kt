@@ -1,6 +1,5 @@
 package com.github.shynixn.workbench.bukkit.particle.dsl
 
-import com.github.shynixn.workbench.minecraft.common.dsl.Position
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
@@ -31,34 +30,19 @@ import org.bukkit.entity.Player
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface Circle : Group {
+interface Group {
     /**
-     * Radius of the circle.
+     * Adds a new particle to this group.
      */
-    var radius: Double
+    fun particle(f: Particle.() -> Unit)
 
     /**
-     * X,Y,Z Axis rotation.
+     * Adds a new circle to this group.
      */
-    var rotation: Position
+    fun circle(f: Circle.() -> Unit)
 
     /**
-     * Density in percentage.
+     * Adds a new delay to this group.
      */
-    var density: Double
-
-    /**
-     * Skips the given angle.
-     */
-    fun skipAngle(f: () -> Double): Circle
-
-    /**
-     * Plays the particle.
-     */
-    fun play(location: Location, vararg players: Player)
-
-    /**
-     * Plays the particle.
-     */
-    fun play(location: Location, players: Collection<Player>)
+    fun delay(f: () -> Int)
 }

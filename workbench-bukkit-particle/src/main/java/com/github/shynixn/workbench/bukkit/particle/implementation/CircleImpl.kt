@@ -4,13 +4,10 @@ package com.github.shynixn.workbench.bukkit.particle.implementation
 
 import com.github.shynixn.workbench.bukkit.async.dsl.async
 import com.github.shynixn.workbench.bukkit.particle.dsl.Circle
-import com.github.shynixn.workbench.bukkit.particle.dsl.Particle
 import com.github.shynixn.workbench.minecraft.common.dsl.Position
 import com.github.shynixn.workbench.minecraft.common.dsl.position
-import kotlinx.coroutines.delay
 import org.bukkit.Location
 import org.bukkit.entity.Player
-import java.util.stream.Stream
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -41,12 +38,7 @@ import kotlin.math.sin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class CircleImpl : Circle {
-    /**
-     * Ordered list of actions.
-     */
-    private val actions: MutableList<Pair<Int, Any>> = ArrayList()
-
+class CircleImpl : GroupImpl(), Circle {
     /**
      * Radius of the circle.
      */
@@ -60,46 +52,9 @@ class CircleImpl : Circle {
         z = 0.0
     }
     /**
-     *  Density.
+     * Density in percentage.
      */
-    override var density: Double = 360.0
-
-    /**
-     * Adds a new particle to this circle.
-     */
-    override fun particle(f: Particle.() -> Unit): Circle {
-        val particle = ParticleImpl()
-        f.invoke(particle)
-        actions.add(0 to { location: Location, players: Collection<Player> ->
-            particle.play(location, players)
-        })
-        return this
-    }
-
-    /**
-     * Adds a new circle to this circle.
-     */
-    override fun circle(f: Circle.() -> Unit): Circle {
-        val circle = CircleImpl()
-        f.invoke(circle)
-        actions.add(0 to { location: Location, players: Collection<Player> ->
-            circle.play(location, players)
-        })
-        return this
-    }
-
-    /**
-     * Adds a new delay to this circle.
-     */
-    override fun delay(f: () -> Int): Circle {
-        val delayAmount = f.invoke().toLong()
-        actions.add(0 to { _: Location, _: Collection<Player> ->
-            async {
-                delay(delayAmount)
-            }
-        })
-        return this
-    }
+    override var density: Double = 1.0
 
     /**
      * Skips the given angle.
@@ -122,7 +77,7 @@ class CircleImpl : Circle {
      */
     override fun play(location: Location, players: Collection<Player>) = async {
         val calculatedSequence = sequence {
-            val adder = 360.0 / density
+            val adder = 360.0 / (density * 360)
             var sum = 0.0
             val radius = radius
 
@@ -139,7 +94,7 @@ class CircleImpl : Circle {
 
         val actionSequence = sequence {
             var index = 0
-            val adder = 360.0 / density
+            val adder = 360.0 / (density * 360)
             while (true) {
                 if (index >= actions.size) {
                     index = 0
@@ -164,7 +119,7 @@ class CircleImpl : Circle {
         }
 
         calculatedSequence.zip(actionSequence).forEach { zipItem ->
-            val nextAngle = zipItem.second.invoke(zipItem.first, players)
+            zipItem.second.invoke(zipItem.first, players)
         }
     }
 }
