@@ -1,9 +1,9 @@
-package com.github.shynixn.workbench.bukkit.particle.dsl
+package com.github.shynixn.workbench.bukkit.testsuite
 
-import com.github.shynixn.workbench.minecraft.common.dsl.Position
-import org.bukkit.Location
+import com.github.shynixn.workbench.bukkit.particle.dsl.circle
+import com.github.shynixn.workbench.bukkit.particle.dsl.particle
+import kotlinx.coroutines.delay
 import org.bukkit.entity.Player
-import java.util.stream.Stream
 
 /**
  * Created by Shynixn 2020.
@@ -32,39 +32,37 @@ import java.util.stream.Stream
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface Circle {
-    /**
-     * Radius of the circle.
-     */
-    var radius: Double
+class ParticleTestSuite {
+    suspend fun play(player : Player) {
+        val location = player.location.add(2.0, 0.5, 0.0)
+     /*   particle {
+            name = "REDSTONE"
+            colorRed = 0
+            colorBlue = 255
+            colorGreen = 0
+        }.play(location, player)*/
 
-    /**
-     * X,Y,Z Axis rotation.
-     */
-    var rotation: Position
+    /*   circle {
+            particle {
+                name = "REDSTONE"
+                colorRed = 0
+                colorBlue = 255
+                colorGreen = 0
+            }
+        }.play(location, player)*/
 
-    /**
-     * Density.
-     */
-    var density : Double
 
-    /**
-     * Adds a new particle to this circle.
-     */
-    fun particle(f: Particle.() -> Unit): Circle
+        circle {
+            particle {
+                name = "REDSTONE"
+                colorRed = 0
+                colorBlue = 255
+                colorGreen = 0
+            }
+            delay {
+                50
+            }
+        }.play(location, player)
 
-    /**
-     * Adds a new delay to this circle.
-     */
-    fun delay(f: () -> Int): Circle
-
-    /**
-     * Plays the particle.
-     */
-    fun play(location: Location, vararg players: Player)
-
-    /**
-     * Plays the particle.
-     */
-    fun play(location: Location, players: Collection<Player>)
+    }
 }

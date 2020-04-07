@@ -4,4 +4,5 @@ include 'workbench-bukkit-particle'
 include 'workbench-bukkit-async'
 include 'workbench-minecraft-common'
 include 'workbench-bukkit-item'
+include 'workbench-bukkit-testsuite'
 

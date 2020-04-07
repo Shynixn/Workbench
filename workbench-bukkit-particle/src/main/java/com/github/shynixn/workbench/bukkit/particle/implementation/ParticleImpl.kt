@@ -1,5 +1,6 @@
 package com.github.shynixn.workbench.bukkit.particle.implementation
 
+import com.github.shynixn.workbench.bukkit.async.dsl.async
 import com.github.shynixn.workbench.bukkit.common.dsl.log
 import com.github.shynixn.workbench.bukkit.item.dsl.item
 import com.github.shynixn.workbench.bukkit.item.dsl.toItemStack
@@ -107,14 +108,21 @@ class ParticleImpl : Particle {
     /**
      * Plays the particle.
      */
-    override fun play(location: Location, vararg players: Player) {
+    override fun play(location: Location, vararg players: Player) = async {
         play(location, players.asList())
     }
 
     /**
      * Plays the particle.
      */
-    override fun play(location: Location, players: Collection<Player>) {
+    override fun play(location: Location, players: Collection<Player>) = async {
+        playInternalParticle(location, players)
+    }
+
+    /**
+     * Play internal particle.
+     */
+    private suspend fun playInternalParticle(location: Location, players: Collection<Player>) {
         if (name == "" || name.equals("none", true)) {
             return
         }
@@ -144,7 +152,7 @@ class ParticleImpl : Particle {
     /**
      * Plays a single particle.
      */
-    private fun playParticleForPlayer(bukkitParticleType: org.bukkit.Particle, location: Location, player: Player) {
+    private suspend fun playParticleForPlayer(bukkitParticleType: org.bukkit.Particle, location: Location, player: Player) {
         val dataType = bukkitParticleType.dataType
 
         when (dataType) {
