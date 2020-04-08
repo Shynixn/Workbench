@@ -53,15 +53,24 @@ suspend fun <T> saveToYamlFile(item: T, file: Path) {
 /**
  * Registers a cached resource from file.
  */
-inline fun <reified T> registerResource(noinline onload: suspend () -> T?, noinline onNotExist: suspend () -> T) {
-    registerResource(object : TypeReference<T>() {}, onload, onNotExist)
+inline fun <reified T> registerResource(
+    noinline onload: suspend () -> T?,
+    noinline onNotExist: suspend () -> T,
+    noinline onSave: suspend (T) -> Unit
+) {
+    registerResource(object : TypeReference<T>() {}, onload, onNotExist, onSave)
 }
 
 /**
  * Registers a cached resource from file.
  */
-fun <T> registerResource(typeInference: TypeReference<*>, onload: suspend () -> T?, onNotExist: suspend () -> T) {
-    val fileResource = Resource(typeInference, onload, onNotExist, null)
+fun <T> registerResource(
+    typeInference: TypeReference<*>,
+    onload: suspend () -> T?,
+    onNotExist: suspend () -> T,
+    onSave: suspend (T) -> Unit
+) {
+    val fileResource = Resource(typeInference, onload, onNotExist, onSave as (suspend (Any) -> Unit), null)
     resource.fileCache[fileResource.typeReference.type] = fileResource
 }
 

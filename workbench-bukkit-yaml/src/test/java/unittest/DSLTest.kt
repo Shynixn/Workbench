@@ -4,10 +4,7 @@ package unittest
 
 import com.github.shynixn.workbench.bukkit.async.dsl.launchBlocking
 import com.github.shynixn.workbench.bukkit.common.dsl.workbenchResource
-import com.github.shynixn.workbench.bukkit.yaml.dsl.get
-import com.github.shynixn.workbench.bukkit.yaml.dsl.loadFromYamlFile
-import com.github.shynixn.workbench.bukkit.yaml.dsl.registerResource
-import com.github.shynixn.workbench.bukkit.yaml.dsl.saveToYamlFile
+import com.github.shynixn.workbench.bukkit.yaml.dsl.*
 import org.bukkit.Bukkit
 import org.bukkit.Server
 import org.bukkit.plugin.Plugin
@@ -113,6 +110,10 @@ class DSLTest {
                 loadFromYamlFile<List<Person>>(Paths.get("build/testcases/existingfile.yml"))
             }, suspend {
                 arrayListOf<Person>()
+            }, { item ->
+                suspend {
+                    saveToYamlFile(item, Paths.get("build/testcases/existingfile.yml"))
+                }
             })
             val getGlobalPersonsFromFile = get<List<Person>>()
             val getGlobalPersonsFromCache = get<List<Person>>()
@@ -120,6 +121,8 @@ class DSLTest {
             assertEquals(initialPersons, getGlobalPersonsFromCache)
             assertEquals(initialPersons, getGlobalPersonsFromFile)
         }
+
+        has<List<Person>>()
     }
 
     data class Person(

@@ -33,5 +33,6 @@ internal class Resource<T>(
     var typeReference: TypeReference<*>,
     var onload: suspend () -> T?,
     var onNotExist: suspend () -> T,
+    var onSave : suspend (Any) -> Unit,
     var cache: Any? = null
 )

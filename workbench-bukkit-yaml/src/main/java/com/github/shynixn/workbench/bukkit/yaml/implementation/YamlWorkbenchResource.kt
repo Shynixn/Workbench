@@ -3,6 +3,7 @@ package com.github.shynixn.workbench.bukkit.yaml.implementation
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator
+import com.github.shynixn.workbench.bukkit.async.dsl.launchAsync
 import com.github.shynixn.workbench.bukkit.common.dsl.WorkbenchResource
 import org.bukkit.plugin.Plugin
 import java.lang.reflect.Type
@@ -46,10 +47,29 @@ internal class YamlWorkbenchResource : WorkbenchResource {
         ObjectMapper(YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER))
 
     /**
+     * Is enabled.
+     */
+    var enabled: Boolean = false
+
+    /**
      * Allocates all workBench resources.
      */
     override fun onEnable(plugin: Plugin) {
+        if (enabled) {
+            throw IllegalArgumentException("YamlWorkbench cannot be enabled twice!")
+        }
+
+        enabled = true
         objectMapper = ObjectMapper(YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER))
+        plugin.server.scheduler.runTaskTimerAsynchronously(plugin, Runnable {
+            launchAsync {
+                for (cacheResource in fileCache.toList()) {
+                    if (cacheResource.second.cache != null) {
+                        cacheResource.second.onSave.invoke(cacheResource.second.cache!!)
+                    }
+                }
+            }
+        }, 1L, 20L * 5)
     }
 
     /**
