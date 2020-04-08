@@ -1,6 +1,9 @@
 package com.github.shynixn.workbench.bukkit.yaml.implementation
 
 import com.fasterxml.jackson.core.type.TypeReference
+import java.util.*
+import kotlin.collections.HashMap
+import kotlin.collections.HashSet
 
 /**
  * Created by Shynixn 2020.
@@ -31,8 +34,10 @@ import com.fasterxml.jackson.core.type.TypeReference
  */
 internal class Resource<T>(
     var typeReference: TypeReference<*>,
-    var onload: suspend () -> T?,
-    var onNotExist: suspend () -> T,
-    var onSave : suspend (Any) -> Unit,
-    var cache: Any? = null
+    var onload: suspend (Any) -> T?,
+    var onNotExist: suspend (Any) -> T,
+    var onSave: suspend (Any) -> Unit,
+    var cache: Any? = null,
+    var playerCache: HashMap<UUID, Any?>? = null,
+    var loadingPlayerCache: HashSet<UUID>? = null
 )

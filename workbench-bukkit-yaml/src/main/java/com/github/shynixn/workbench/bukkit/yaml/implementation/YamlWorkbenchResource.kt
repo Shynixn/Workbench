@@ -5,6 +5,8 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator
 import com.github.shynixn.workbench.bukkit.async.dsl.launchAsync
 import com.github.shynixn.workbench.bukkit.common.dsl.WorkbenchResource
+import com.github.shynixn.workbench.bukkit.common.dsl.playerByUUID
+import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import java.lang.reflect.Type
 
@@ -37,9 +39,10 @@ import java.lang.reflect.Type
  */
 internal class YamlWorkbenchResource : WorkbenchResource {
     /**
-     * RunTimeFileCache.
+     * RunTimeCommonCache.
      */
-    var fileCache = HashMap<Type, Resource<*>>()
+    var commonCache = HashMap<Type, Resource<*>>()
+
     /**
      * Object Mapper.
      */
@@ -63,9 +66,16 @@ internal class YamlWorkbenchResource : WorkbenchResource {
         objectMapper = ObjectMapper(YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER))
         plugin.server.scheduler.runTaskTimerAsynchronously(plugin, Runnable {
             launchAsync {
-                for (cacheResource in fileCache.toList()) {
+                for (cacheResource in commonCache.toList()) {
                     if (cacheResource.second.cache != null) {
                         cacheResource.second.onSave.invoke(cacheResource.second.cache!!)
+                    }
+                    if (cacheResource.second.playerCache != null) {
+                        for (uuid in cacheResource.second.playerCache!!.keys) {
+                            val player = playerByUUID { uuid.toString() }
+                            val value = cacheResource.second.playerCache!![uuid]
+                            cacheResource.second.onSave.invoke(Pair(player, value))
+                        }
                     }
                 }
             }
@@ -73,15 +83,29 @@ internal class YamlWorkbenchResource : WorkbenchResource {
     }
 
     /**
+     * OnPlayerLeaveEvent.
+     */
+    override fun onPlayerLeaveEvent(player: Player) {
+        val key = player.uniqueId
+
+        for (item in commonCache.values) {
+            if (item.playerCache != null && item.playerCache!!.containsKey(key)) {
+                item.playerCache!!.remove(key)
+            }
+        }
+    }
+
+    /**
      * Performs a lightweight reload on resources.
      */
     override fun reload() {
-        fileCache.clear()
+        commonCache.clear()
     }
 
     /**
      * Frees all workBench resources.
      */
     override fun onDisable() {
+        commonCache.clear()
     }
 }

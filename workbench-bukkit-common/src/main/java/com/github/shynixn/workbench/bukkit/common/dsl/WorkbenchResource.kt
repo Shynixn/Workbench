@@ -1,5 +1,6 @@
 package com.github.shynixn.workbench.bukkit.common.dsl
 
+import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 
 /**
@@ -40,6 +41,11 @@ interface WorkbenchResource {
      * Allocates all workBench resources.
      */
     fun onEnable(plugin: Plugin)
+
+    /**
+     * OnPlayerLeaveEvent.
+     */
+    fun onPlayerLeaveEvent(player: Player) {}
 
     /**
      * Performs a lightweight reload on resources.

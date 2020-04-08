@@ -14,6 +14,7 @@ import org.bukkit.plugin.PluginManager
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.util.EulerAngle
 import org.bukkit.util.Vector
+import java.util.*
 
 /**
  * Created by Shynixn 2020.
@@ -64,6 +65,14 @@ fun log(f: Logger.() -> Unit) {
  */
 fun player(f: () -> String): Player {
     return Bukkit.getPlayer(f.invoke())!!
+}
+
+
+/**
+ * Gets the player by the uuid.
+ */
+fun playerByUUID(f: () -> String): Player {
+    return Bukkit.getPlayer(UUID.fromString(f.invoke()))!!
 }
 
 /**
