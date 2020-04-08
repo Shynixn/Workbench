@@ -3,6 +3,7 @@
 package com.github.shynixn.workbench.bukkit.particle.implementation
 
 import com.github.shynixn.workbench.bukkit.async.dsl.async
+import com.github.shynixn.workbench.bukkit.async.dsl.launchAsync
 import com.github.shynixn.workbench.bukkit.particle.dsl.Circle
 import com.github.shynixn.workbench.bukkit.particle.dsl.Group
 import com.github.shynixn.workbench.bukkit.particle.dsl.Line
@@ -89,7 +90,7 @@ abstract class GroupImpl : Group {
         val delayAmount = f.invoke().toLong()
         for (i in 0 until amount) {
             actions.add(0 to { _: Location, _: Collection<Player> ->
-                async {
+                launchAsync {
                     kotlinx.coroutines.delay(delayAmount)
                 }
             })

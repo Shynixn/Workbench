@@ -5,4 +5,6 @@ include 'workbench-bukkit-async'
 include 'workbench-minecraft-common'
 include 'workbench-bukkit-item'
 include 'workbench-bukkit-testsuite'
+include 'workbench-yaml'
+include 'workbench-bukkit-yaml'
 

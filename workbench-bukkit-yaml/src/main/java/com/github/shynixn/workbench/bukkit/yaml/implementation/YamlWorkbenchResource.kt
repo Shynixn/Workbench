@@ -1,6 +1,11 @@
-package com.github.shynixn.workbench.bukkit.common.dsl
+package com.github.shynixn.workbench.bukkit.yaml.implementation
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator
+import com.github.shynixn.workbench.bukkit.common.dsl.WorkbenchResource
 import org.bukkit.plugin.Plugin
+import java.lang.reflect.Type
 
 /**
  * Created by Shynixn 2020.
@@ -29,25 +34,34 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface WorkbenchResource {
+internal class YamlWorkbenchResource : WorkbenchResource {
     /**
-     * Registers a new sub workBench resource. Gets immediately enabled if the parent
-     * workBench resource is enabled. Gets automatically disabled if the parent is disabled.
+     * RunTimeFileCache.
      */
-    fun registerSubResource(workbenchResource: WorkbenchResource) {}
+    var fileCache = HashMap<Type, Resource<*>>()
+    /**
+     * Object Mapper.
+     */
+    var objectMapper: ObjectMapper =
+        ObjectMapper(YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER))
 
     /**
      * Allocates all workBench resources.
      */
-    fun onEnable(plugin: Plugin)
+    override fun onEnable(plugin: Plugin) {
+        objectMapper = ObjectMapper(YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER))
+    }
 
     /**
      * Performs a lightweight reload on resources.
      */
-    fun reload() {}
+    override fun reload() {
+        fileCache.clear()
+    }
 
     /**
      * Frees all workBench resources.
      */
-    fun onDisable()
+    override fun onDisable() {
+    }
 }

@@ -59,6 +59,13 @@ internal class WorkBenchResourceImpl : WorkbenchResource {
     }
 
     /**
+     * Performs a lightweight reload on resources.
+     */
+    override fun reload() {
+        workBenches.forEach { e -> e.reload() }
+    }
+
+    /**
      * Frees all workBench resources.
      */
     override fun onDisable() {

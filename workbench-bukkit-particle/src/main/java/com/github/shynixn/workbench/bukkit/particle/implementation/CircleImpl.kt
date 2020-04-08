@@ -2,7 +2,7 @@
 
 package com.github.shynixn.workbench.bukkit.particle.implementation
 
-import com.github.shynixn.workbench.bukkit.async.dsl.async
+import com.github.shynixn.workbench.bukkit.async.dsl.launchAsync
 import com.github.shynixn.workbench.bukkit.particle.dsl.Circle
 import com.github.shynixn.workbench.minecraft.common.dsl.Position
 import com.github.shynixn.workbench.minecraft.common.dsl.position
@@ -75,51 +75,53 @@ class CircleImpl : GroupImpl(), Circle {
     /**
      * Plays the particle.
      */
-    override fun play(location: Location, players: Collection<Player>) = async {
-        val calculatedSequence = sequence {
-            val adder = 360.0 / (density * 360)
-            var sum = 0.0
-            val radius = radius
+    override fun play(location: Location, players: Collection<Player>) {
+        launchAsync {
+            val calculatedSequence = sequence {
+                val adder = 360.0 / (density * 360)
+                var sum = 0.0
+                val radius = radius
 
-            while (sum < 360) {
-                val radian = Math.toRadians(sum)
-                val x = radius * cos(radian)
-                val y = radius * sin(radian)
-                val calculatedLocation = Location(location.world, location.x + x, location.y, location.z + y)
-                yield(calculatedLocation)
+                while (sum < 360) {
+                    val radian = Math.toRadians(sum)
+                    val x = radius * cos(radian)
+                    val y = radius * sin(radian)
+                    val calculatedLocation = Location(location.world, location.x + x, location.y, location.z + y)
+                    yield(calculatedLocation)
 
-                sum += adder
-            }
-        }
-
-        val actionSequence = sequence {
-            var index = 0
-            val adder = 360.0 / (density * 360)
-            while (true) {
-                if (index >= actions.size) {
-                    index = 0
+                    sum += adder
                 }
+            }
 
-                val action = actions[index]
-
-                if (action.first == 0) {
-                    yield(action.second as ((Location, Collection<Player>) -> Unit))
-                } else if (action.first == 1) {
-                    val skipAngle = action.second as Double
-                    val skipActions = (skipAngle / adder).toInt()
-                    val emptyAction = { _: Location, _: Collection<Player> -> Unit }
-
-                    for (i in 0 until skipActions) {
-                        yield(emptyAction)
+            val actionSequence = sequence {
+                var index = 0
+                val adder = 360.0 / (density * 360)
+                while (true) {
+                    if (index >= actions.size) {
+                        index = 0
                     }
+
+                    val action = actions[index]
+
+                    if (action.first == 0) {
+                        yield(action.second as ((Location, Collection<Player>) -> Unit))
+                    } else if (action.first == 1) {
+                        val skipAngle = action.second as Double
+                        val skipActions = (skipAngle / adder).toInt()
+                        val emptyAction = { _: Location, _: Collection<Player> -> Unit }
+
+                        for (i in 0 until skipActions) {
+                            yield(emptyAction)
+                        }
+                    }
+
+                    index++
                 }
-
-                index++
             }
-        }
 
-        calculatedSequence.zip(actionSequence).forEach { zipItem ->
-            zipItem.second.invoke(zipItem.first, players)
+            calculatedSequence.zip(actionSequence).forEach { zipItem ->
+                zipItem.second.invoke(zipItem.first, players)
+            }
         }
     }
 }

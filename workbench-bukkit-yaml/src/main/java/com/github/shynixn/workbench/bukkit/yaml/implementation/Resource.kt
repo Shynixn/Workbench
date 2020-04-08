@@ -1,6 +1,6 @@
-package com.github.shynixn.workbench.bukkit.common.dsl
+package com.github.shynixn.workbench.bukkit.yaml.implementation
 
-import org.bukkit.plugin.Plugin
+import com.fasterxml.jackson.core.type.TypeReference
 
 /**
  * Created by Shynixn 2020.
@@ -29,25 +29,9 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface WorkbenchResource {
-    /**
-     * Registers a new sub workBench resource. Gets immediately enabled if the parent
-     * workBench resource is enabled. Gets automatically disabled if the parent is disabled.
-     */
-    fun registerSubResource(workbenchResource: WorkbenchResource) {}
-
-    /**
-     * Allocates all workBench resources.
-     */
-    fun onEnable(plugin: Plugin)
-
-    /**
-     * Performs a lightweight reload on resources.
-     */
-    fun reload() {}
-
-    /**
-     * Frees all workBench resources.
-     */
-    fun onDisable()
-}
+internal class Resource<T>(
+    var typeReference: TypeReference<*>,
+    var onload: suspend () -> T?,
+    var onNotExist: suspend () -> T,
+    var cache: Any? = null
+)

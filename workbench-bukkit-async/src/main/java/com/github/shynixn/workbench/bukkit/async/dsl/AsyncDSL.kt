@@ -2,8 +2,7 @@ package com.github.shynixn.workbench.bukkit.async.dsl
 
 import com.github.shynixn.workbench.bukkit.async.implementation.AsyncWorkbenchResource
 import com.github.shynixn.workbench.bukkit.common.dsl.workbenchResource
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 /**
  * Created by Shynixn 2020.
@@ -49,9 +48,19 @@ private fun registerIfNotRegistered() {
 /**
  * Launches a new coroutine scope within the game thread.
  */
-fun launch(f: suspend () -> Unit) {
+fun <T> launch(f: suspend () -> T): Job {
     registerIfNotRegistered()
-    GlobalScope.launch(resource.syncDispatcher!!) {
+    return GlobalScope.launch(resource.syncDispatcher!!) {
+        f.invoke()
+    }
+}
+
+/**
+ * Launches a new blocking coroutine scope within the game thread.
+ */
+fun <T> launchBlocking(f: suspend () -> T) {
+    registerIfNotRegistered()
+    runBlocking(resource.syncDispatcher!!) {
         f.invoke()
     }
 }
@@ -59,9 +68,18 @@ fun launch(f: suspend () -> Unit) {
 /**
  * Launches a new coroutine scope within any async thread.
  */
-fun async(f: suspend () -> Unit) {
+fun <T> launchAsync(f: suspend () -> T): Job {
     registerIfNotRegistered()
-    GlobalScope.launch(resource.asyncDispatcher!!) {
+    return GlobalScope.launch(resource.asyncDispatcher!!) {
+        f.invoke()
+    }
+}
+
+/**
+ * Schedules an async operation on the current coroutine context.
+ */
+suspend fun <T> async(f: suspend () -> T): T {
+    return withContext(resource.asyncDispatcher!!) {
         f.invoke()
     }
 }
