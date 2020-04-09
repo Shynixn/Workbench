@@ -3,6 +3,7 @@ package com.github.shynixn.workbench.bukkit.yaml.implementation
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator
+import com.github.shynixn.workbench.bukkit.async.dsl.launch
 import com.github.shynixn.workbench.bukkit.async.dsl.launchAsync
 import com.github.shynixn.workbench.bukkit.common.dsl.WorkbenchResource
 import com.github.shynixn.workbench.bukkit.common.dsl.playerByUUID
@@ -66,20 +67,27 @@ internal class YamlWorkbenchResource : WorkbenchResource {
         objectMapper = ObjectMapper(YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER))
         plugin.server.scheduler.runTaskTimerAsynchronously(plugin, Runnable {
             launchAsync {
-                for (cacheResource in commonCache.toList()) {
-                    if (cacheResource.second.cache != null) {
-                        cacheResource.second.onSave.invoke(cacheResource.second.cache!!)
-                    }
-                    if (cacheResource.second.playerCache != null) {
-                        for (uuid in cacheResource.second.playerCache!!.keys) {
-                            val player = playerByUUID { uuid.toString() }
-                            val value = cacheResource.second.playerCache!![uuid]
-                            cacheResource.second.onSave.invoke(Pair(player, value))
-                        }
-                    }
-                }
+                saveCache()
             }
         }, 1L, 20L * 5)
+    }
+
+    /**
+     * Saves the current cache.
+     */
+    private suspend fun saveCache() {
+        for (cacheResource in commonCache.toList()) {
+            if (cacheResource.second.cache != null) {
+                cacheResource.second.onSave.invoke(cacheResource.second.cache!!)
+            }
+            if (cacheResource.second.playerCache != null) {
+                for (uuid in cacheResource.second.playerCache!!.keys) {
+                    val player = playerByUUID { uuid.toString() }
+                    val value = cacheResource.second.playerCache!![uuid]
+                    cacheResource.second.onSave.invoke(Pair(player, value))
+                }
+            }
+        }
     }
 
     /**
@@ -106,6 +114,9 @@ internal class YamlWorkbenchResource : WorkbenchResource {
      * Frees all workBench resources.
      */
     override fun onDisable() {
+        launch {
+            saveCache()
+        }
         commonCache.clear()
     }
 }

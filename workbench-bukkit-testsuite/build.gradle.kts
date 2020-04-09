@@ -29,6 +29,7 @@ repositories {
 }
 
 dependencies {
+    implementation(project(":workbench-bukkit-yaml"))
     implementation(project(":workbench-bukkit-async"))
     implementation(project(":workbench-bukkit-common"))
     implementation(project(":workbench-bukkit-item"))
