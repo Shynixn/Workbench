@@ -1,8 +1,9 @@
 package com.github.shynixn.workbench.bukkit.testsuite.arena
 
+import com.github.kiulian.downloader.YoutubeDownloader
+import org.apache.commons.io.FileUtils
 import java.nio.file.Files
-import java.nio.file.Paths
-
+import java.nio.file.Path
 
 /**
  * Created by Shynixn 2020.
@@ -31,16 +32,20 @@ import java.nio.file.Paths
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-fun main(args: Array<String>) {
-    val codecService = FfmpegService()
-    val downloadService = YoutubeVideoDownloadService()
+class YoutubeVideoDownloadService {
+    /**
+     * Downloads a single video to the given file.
+     */
+    fun downloadVideo(videoUrl: String, file: Path) {
+        val v = YoutubeDownloader();
+        val id = videoUrl.split("=")[1]
+        val video = v.getVideo(id)
 
-    val ffmFolder = codecService.checkAndInstall(Paths.get("ffmpeg"), OSArchitectureTypes.WINDOWS_64)
-
-    val result = Paths.get("test")
-    Files.createDirectories(result)
-    val videoFile = result.resolve("fate.mp4")
-    downloadService.downloadVideo("https://www.youtube.com/watch?v=5IA2sjmc3Sk", videoFile)
-
-    codecService.convertToOgg(videoFile, ffmFolder)
+        val videoDownloadDirectory = file.parent.resolve("videodownload")
+        Files.createDirectories(videoDownloadDirectory)
+        video.download(video.audioFormats()[0], videoDownloadDirectory.toFile())
+        Files.deleteIfExists(file)
+        FileUtils.moveFile(videoDownloadDirectory.toFile().listFiles()!!.first(), file.toFile())
+        FileUtils.deleteDirectory(videoDownloadDirectory.toFile())
+    }
 }

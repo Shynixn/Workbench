@@ -1,5 +1,9 @@
 package com.github.shynixn.workbench.bukkit.testsuite.arena
 
+import net.bramp.ffmpeg.FFmpeg
+import net.bramp.ffmpeg.FFmpegExecutor
+import net.bramp.ffmpeg.FFprobe
+import net.bramp.ffmpeg.builder.FFmpegBuilder
 import net.lingala.zip4j.ZipFile
 import org.apache.commons.io.FileUtils
 import java.net.URL
@@ -33,7 +37,7 @@ import java.nio.file.Path
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class FfmpegInstallService {
+class FfmpegService {
     private val ffmpegBinaries = mapOf(
         OSArchitectureTypes.WINDOWS_32 to "https://github.com/vot/ffbinaries-prebuilt/releases/download/v4.2.1/ffmpeg-4.2.1-win-32.zip",
         OSArchitectureTypes.WINDOWS_64 to "https://github.com/vot/ffbinaries-prebuilt/releases/download/v4.2.1/ffmpeg-4.2.1-win-64.zip",
@@ -59,7 +63,7 @@ class FfmpegInstallService {
     /**
      * Installs the ffmpeg libraries for the given architecture.
      */
-    fun install(folder: Path, osArchitectureTypes: OSArchitectureTypes): Path {
+    fun checkAndInstall(folder: Path, osArchitectureTypes: OSArchitectureTypes): Path {
         Files.createDirectories(folder)
         val installationFolder = folder.resolve(osArchitectureTypes.identififer)
 
@@ -75,6 +79,27 @@ class FfmpegInstallService {
         FileUtils.deleteDirectory(folder.resolve("download").toFile())
 
         return installationFolder
+    }
+
+    fun convertToOgg(videoFile: Path, ffmFolder: Path) {
+        val outPutPathMp3 = videoFile.parent.toFile().absolutePath + "/" + videoFile.toFile().nameWithoutExtension + ".mp3"
+        val outPutPathOgg = videoFile.parent.toFile().absolutePath + "/" + videoFile.toFile().nameWithoutExtension + ".ogg"
+        convertInputToOutPut(ffmFolder, videoFile.toFile().absolutePath, outPutPathMp3)
+        convertInputToOutPut(ffmFolder, outPutPathMp3, outPutPathOgg)
+    }
+
+    private fun convertInputToOutPut(ffmFolder: Path, inputFile: String, outPutFile: String) {
+        val ffmpeg = FFmpeg(ffmFolder.toFile().absolutePath + "/ffmpeg")
+        val ffprobe = FFprobe(ffmFolder.toFile().absolutePath + "/ffprobe")
+
+        val builder = FFmpegBuilder()
+            .setInput(inputFile) // Filename, or a FFmpegProbeResult
+            .overrideOutputFiles(true) // Override the output if it exists
+            .addOutput(outPutFile) // Filename for the destination
+            .done()
+
+        val executor = FFmpegExecutor(ffmpeg, ffprobe)
+        executor.createJob(builder).run()
     }
 
     private fun downloadFileFromUrl(folder: Path, url: String): Path {

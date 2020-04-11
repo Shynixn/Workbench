@@ -1,5 +1,6 @@
 package com.github.shynixn.workbench.bukkit.testsuite
 
+import com.github.kiulian.downloader.YoutubeDownloader
 import com.github.shynixn.workbench.bukkit.async.dsl.launch
 import com.github.shynixn.workbench.bukkit.common.dsl.ChatColor
 import com.github.shynixn.workbench.bukkit.common.dsl.player
@@ -44,6 +45,10 @@ class WorkBenchTestSuitePlugin : JavaPlugin() {
     override fun onEnable()  {
         workbenchResource.onEnable(this)
         val player = player { "Shynixn" }
+
+
+
+        //  video.download(  video.audioFormats().get(0), File("testdownload/audio.mp3"))
 
       /*  launch {
             player.sendMessage(prefix + "Loading [Particle] testsuite....")
