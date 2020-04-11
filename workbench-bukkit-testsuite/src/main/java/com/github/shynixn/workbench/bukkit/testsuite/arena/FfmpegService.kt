@@ -6,6 +6,10 @@ import net.bramp.ffmpeg.FFprobe
 import net.bramp.ffmpeg.builder.FFmpegBuilder
 import net.lingala.zip4j.ZipFile
 import org.apache.commons.io.FileUtils
+import org.apache.commons.io.IOUtils
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 import java.net.URL
 import java.nio.file.Files
 import java.nio.file.Path
@@ -117,11 +121,64 @@ class FfmpegService {
             "User-Agent",
             "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2"
         )
-        Files.copy(urlConnection.getInputStream(), downloadFile)
 
+        urlConnection.connect()
+        val contentLength = urlConnection.contentLength.toLong()
+        urlConnection.getInputStream().use { input ->
+            ProgressFileOutStream(downloadFile.toFile(), contentLength) { progress ->
+                println("Progress: " + progress)
+            }.use { output ->
+                IOUtils.copy(input, output)
+            }
+        }
         val extractAbleFile = ZipFile(downloadFile.toFile())
         extractAbleFile.extractAll(downloadFolder.toFile().absolutePath)
         val downloadedFile = downloadFolder.toFile().listFiles { f -> f.name != "download.zip" }!!.first()
         return downloadedFile.toPath()
+    }
+
+    class ProgressFileOutStream(file : File, val fileSize : Long, val progress : (Double) -> Unit) : FileOutputStream(file){
+        var currentWrittenBytes : Long = 0
+
+        /**
+         * Writes the specified byte to this file output stream. Implements
+         * the `write` method of `OutputStream`.
+         *
+         * @param      b   the byte to be written.
+         * @exception  IOException  if an I/O error occurs.
+         */
+        override fun write(b: Int) {
+            super.write(b)
+            currentWrittenBytes++
+            progress.invoke((currentWrittenBytes.toDouble() / fileSize.toDouble()))
+        }
+
+        /**
+         * Writes `b.length` bytes from the specified byte array
+         * to this file output stream.
+         *
+         * @param      b   the data.
+         * @exception  IOException  if an I/O error occurs.
+         */
+        override fun write(b: ByteArray) {
+            super.write(b)
+            currentWrittenBytes += b.size
+            progress.invoke((currentWrittenBytes.toDouble() / fileSize.toDouble()))
+        }
+
+        /**
+         * Writes `len` bytes from the specified byte array
+         * starting at offset `off` to this file output stream.
+         *
+         * @param      b     the data.
+         * @param      off   the start offset in the data.
+         * @param      len   the number of bytes to write.
+         * @exception  IOException  if an I/O error occurs.
+         */
+        override fun write(b: ByteArray, off: Int, len: Int) {
+            super.write(b, off, len)
+            currentWrittenBytes += len
+            progress.invoke((currentWrittenBytes.toDouble() / fileSize.toDouble()))
+        }
     }
 }
