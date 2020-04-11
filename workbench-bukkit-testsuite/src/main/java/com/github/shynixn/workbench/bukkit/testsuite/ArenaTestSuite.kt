@@ -1,12 +1,11 @@
 package com.github.shynixn.workbench.bukkit.testsuite
 
-import com.github.shynixn.workbench.bukkit.async.dsl.launch
-import com.github.shynixn.workbench.bukkit.common.dsl.ChatColor
-import com.github.shynixn.workbench.bukkit.common.dsl.player
-import com.github.shynixn.workbench.bukkit.common.dsl.workbenchResource
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import org.bukkit.plugin.java.JavaPlugin
+import com.github.shynixn.workbench.bukkit.common.dsl.registerCommands
+import com.github.shynixn.workbench.bukkit.testsuite.arena.*
+import com.github.shynixn.workbench.bukkit.yaml.dsl.loadFromYamlFile
+import com.github.shynixn.workbench.bukkit.yaml.dsl.registerPlayerResource
+import com.github.shynixn.workbench.bukkit.yaml.dsl.registerResource
+import org.bukkit.plugin.Plugin
 
 /**
  * Created by Shynixn 2020.
@@ -35,35 +34,43 @@ import org.bukkit.plugin.java.JavaPlugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class WorkBenchTestSuitePlugin : JavaPlugin() {
-    private val prefix = ChatColor.GREEN.toString() + "[TestSuite] " + ChatColor.WHITE
+class ArenaTestSuite {
 
-    /**
-     * OnEnable.
-     */
-    override fun onEnable()  {
-        workbenchResource.onEnable(this)
-        val player = player { "Shynixn" }
-
-      /*  launch {
-            player.sendMessage(prefix + "Loading [Particle] testsuite....")
-            for(i in 0 until 10){
-                player.sendMessage("Playing [Particle] testsuite ${i+1}")
-                delay(1500)
-                val particleTestSuite = ParticleTestSuite()
-                particleTestSuite.play(player)
+    suspend fun setup(plugin: Plugin) {
+        registerPlayerResource({ player ->
+            suspend {
             }
+        },
+            { player ->
+                suspend {
+                    PlayerStats(player)
+                }
+            },
 
-            player.sendMessage(prefix + "Completed [Particle] testsuite.")
-            player.sendMessage(prefix + "Completed testsuite.")
-        }*/
+            { player ->
+                suspend {
 
-        launch {
-            ArenaTestSuite().setup(this)
-        }
-    }
+                }
+            }
+        )
 
-    override fun onDisable() {
-        workbenchResource.onDisable()
+        registerResource({
+            suspend {
+                arrayListOf<Kit>(loadFromYamlFile<GilgameshKit>(plugin.dataFolder.toPath().resolve(KitType.Gilgamesh.identifier + ".yml"))!!)
+            }
+        },
+            {
+                suspend {
+                    GilgameshKit()
+                }
+            },
+
+            { item ->
+                suspend {
+                }
+            }
+        )
+
+        plugin.server.pluginManager.registerCommands("fate", FateCommandExecutor(), plugin)
     }
 }

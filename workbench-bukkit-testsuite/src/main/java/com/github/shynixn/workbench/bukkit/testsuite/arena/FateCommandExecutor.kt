@@ -1,12 +1,10 @@
-package com.github.shynixn.workbench.bukkit.testsuite
+package com.github.shynixn.workbench.bukkit.testsuite.arena
 
 import com.github.shynixn.workbench.bukkit.async.dsl.launch
 import com.github.shynixn.workbench.bukkit.common.dsl.ChatColor
-import com.github.shynixn.workbench.bukkit.common.dsl.player
-import com.github.shynixn.workbench.bukkit.common.dsl.workbenchResource
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import org.bukkit.plugin.java.JavaPlugin
+import com.github.shynixn.workbench.bukkit.common.dsl.CommandExecutor
+import com.github.shynixn.workbench.bukkit.yaml.dsl.get
+import org.bukkit.entity.Player
 
 /**
  * Created by Shynixn 2020.
@@ -35,35 +33,37 @@ import org.bukkit.plugin.java.JavaPlugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class WorkBenchTestSuitePlugin : JavaPlugin() {
-    private val prefix = ChatColor.GREEN.toString() + "[TestSuite] " + ChatColor.WHITE
-
+class FateCommandExecutor(private val kitService: KitServiceImpl = KitServiceImpl()) : CommandExecutor {
     /**
-     * OnEnable.
+     * Gets called when the given [source] executes the defined command with the given [args].
      */
-    override fun onEnable()  {
-        workbenchResource.onEnable(this)
-        val player = player { "Shynixn" }
-
-      /*  launch {
-            player.sendMessage(prefix + "Loading [Particle] testsuite....")
-            for(i in 0 until 10){
-                player.sendMessage("Playing [Particle] testsuite ${i+1}")
-                delay(1500)
-                val particleTestSuite = ParticleTestSuite()
-                particleTestSuite.play(player)
-            }
-
-            player.sendMessage(prefix + "Completed [Particle] testsuite.")
-            player.sendMessage(prefix + "Completed testsuite.")
-        }*/
-
+    override fun <S> onExecuteCommand(source: S, args: Array<out String>) {
         launch {
-            ArenaTestSuite().setup(this)
+
+            onExecutePlayer(source, args)
         }
     }
 
-    override fun onDisable() {
-        workbenchResource.onDisable()
+    /**
+     * Gets called when the given [source] executes the defined command with the given [args].
+     */
+    private suspend fun <S> onExecutePlayer(source: S, args: Array<out String>) {
+        if (source !is Player) {
+            return
+        }
+
+        source.sendMessage(ChatColor.RED.toString() + "???")
+
+
+        if (args.size > 1 && args[0] == "kit") {
+            val kitName = args[1]
+            val kit = get<List<Kit>>().firstOrNull { e -> e.kitType.name.toLowerCase() == kitName.toLowerCase() }
+
+            if (kit == null) {
+                source.sendMessage(ChatColor.RED.toString() + "Kit '$kitName' does not exist.")
+                return
+            }
+            kitService.selectKit(source, kit)
+        }
     }
 }
