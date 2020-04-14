@@ -1,4 +1,4 @@
-package com.github.shynixn.workbench.bukkit.testsuite.arena
+package com.github.shynixn.workbench.minecraft.common.dsl
 
 /**
  * Created by Shynixn 2020.
@@ -27,5 +27,14 @@ package com.github.shynixn.workbench.bukkit.testsuite.arena
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class GilgameshKit(override val kitType: KitType = KitType.Gilgamesh, var health: Double = 40.0) : Kit {
+interface CommonNMS {
+    /**
+     * Gets the nms entity from the bukkit entity.
+     */
+    fun getNMSEntityFromBukkitEntity(entity: Any): Any
+
+    /**
+     * Applies the given generic attribute.
+     */
+    fun applyGenericAttribute(entity: Any, name: String, value: Double)
 }

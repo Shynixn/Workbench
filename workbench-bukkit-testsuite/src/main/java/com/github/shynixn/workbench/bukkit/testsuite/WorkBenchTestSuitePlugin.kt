@@ -1,12 +1,9 @@
 package com.github.shynixn.workbench.bukkit.testsuite
 
-import com.github.kiulian.downloader.YoutubeDownloader
-import com.github.shynixn.workbench.bukkit.async.dsl.launch
-import com.github.shynixn.workbench.bukkit.common.dsl.ChatColor
-import com.github.shynixn.workbench.bukkit.common.dsl.player
-import com.github.shynixn.workbench.bukkit.common.dsl.workbenchResource
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
+import com.github.shynixn.workbench.bukkit.common.dsl.*
+import com.github.shynixn.workbench.bukkit.common.dsl.attribute.GenericAttributeType
+import org.bukkit.entity.EntityType
+import org.bukkit.entity.Zombie
 import org.bukkit.plugin.java.JavaPlugin
 
 /**
@@ -42,30 +39,37 @@ class WorkBenchTestSuitePlugin : JavaPlugin() {
     /**
      * OnEnable.
      */
-    override fun onEnable()  {
+    override fun onEnable() {
         workbenchResource.onEnable(this)
         val player = player { "Shynixn" }
+
+        clearAllEntities()
+        val zombie = entity<Zombie> {
+            EntityType.ZOMBIE to player.location.add(2.0, 0.0, 0.0)
+        }
+
+        zombie.genericAttribute {
+            type = GenericAttributeType.FOLLOW_RANGE
+            value = 150.0
+        }
+
 
 
 
         //  video.download(  video.audioFormats().get(0), File("testdownload/audio.mp3"))
 
-      /*  launch {
-            player.sendMessage(prefix + "Loading [Particle] testsuite....")
-            for(i in 0 until 10){
-                player.sendMessage("Playing [Particle] testsuite ${i+1}")
-                delay(1500)
-                val particleTestSuite = ParticleTestSuite()
-                particleTestSuite.play(player)
-            }
+        /*  launch {
+              player.sendMessage(prefix + "Loading [Particle] testsuite....")
+              for(i in 0 until 10){
+                  player.sendMessage("Playing [Particle] testsuite ${i+1}")
+                  delay(1500)
+                  val particleTestSuite = ParticleTestSuite()
+                  particleTestSuite.play(player)
+              }
 
-            player.sendMessage(prefix + "Completed [Particle] testsuite.")
-            player.sendMessage(prefix + "Completed testsuite.")
-        }*/
-
-        launch {
-            ArenaTestSuite().setup(this)
-        }
+              player.sendMessage(prefix + "Completed [Particle] testsuite.")
+              player.sendMessage(prefix + "Completed testsuite.")
+          }*/
     }
 
     override fun onDisable() {

@@ -1,6 +1,7 @@
-package com.github.shynixn.workbench.bukkit.testsuite.arena
+package com.github.shynixn.workbench.bukkit.common.implementation.attribute
 
-import org.bukkit.entity.Player
+import com.github.shynixn.workbench.bukkit.common.dsl.attribute.GenericAttribute
+import com.github.shynixn.workbench.bukkit.common.dsl.attribute.GenericAttributeType
 
 /**
  * Created by Shynixn 2020.
@@ -29,13 +30,4 @@ import org.bukkit.entity.Player
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class KitServiceImpl {
-    init {
-
-        println("asd")
-    }
-
-    fun selectKit(player: Player, kit: Kit) {
-        player.sendMessage("Selected kit: " + kit.kitType.identifier)
-    }
-}
+class GenericAttributeImpl(override var type: GenericAttributeType, override var value: Double) : GenericAttribute

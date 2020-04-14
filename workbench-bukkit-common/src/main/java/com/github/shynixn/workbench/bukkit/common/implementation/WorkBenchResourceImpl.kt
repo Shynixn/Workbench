@@ -1,6 +1,7 @@
 package com.github.shynixn.workbench.bukkit.common.implementation
 
 import com.github.shynixn.workbench.bukkit.common.dsl.*
+import com.github.shynixn.workbench.minecraft.common.dsl.CommonNMS
 import org.bukkit.Bukkit
 import org.bukkit.Server
 import org.bukkit.plugin.Plugin
@@ -36,6 +37,7 @@ internal class WorkBenchResourceImpl : WorkbenchResource {
     var plugin: Plugin? = null
     private val workBenches = HashSet<WorkbenchResource>()
     var serverVersion: Version = Version.VERSION_UNKNOWN
+    var commonNMS: CommonNMS? = null
 
     /**
      * Registers a new sub workBench resource. Gets immediately enabled if the parent
@@ -55,6 +57,15 @@ internal class WorkBenchResourceImpl : WorkbenchResource {
     override fun onEnable(plugin: Plugin) {
         this.plugin = plugin
         this.serverVersion = getCurrentServerVersion()
+        try {
+            commonNMS =
+                findClazz("com.github.shynixn.workbench.bukkit.common.nms.VERSION.Common").getDeclaredConstructor().newInstance() as CommonNMS
+        } catch (e: Exception) {
+            log {
+                warning { "NMS classes could not be loaded." }
+                throwable { e }
+            }
+        }
         workBenches.forEach { e -> e.onEnable(plugin) }
     }
 

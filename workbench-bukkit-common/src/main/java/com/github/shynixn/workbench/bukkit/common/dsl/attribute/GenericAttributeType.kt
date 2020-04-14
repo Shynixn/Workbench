@@ -1,6 +1,4 @@
-package com.github.shynixn.workbench.bukkit.testsuite.arena
-
-import org.bukkit.entity.Player
+package com.github.shynixn.workbench.bukkit.common.dsl.attribute
 
 /**
  * Created by Shynixn 2020.
@@ -29,5 +27,6 @@ import org.bukkit.entity.Player
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-data class PlayerStats(private val player : Player, var kit : Kit? = null) {
+enum class GenericAttributeType(var identififer: String) {
+    FOLLOW_RANGE("generic.followRange")
 }

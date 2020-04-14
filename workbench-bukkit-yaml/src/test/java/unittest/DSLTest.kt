@@ -58,7 +58,6 @@ class DSLTest {
         val asyncThreadPool = Executors.newFixedThreadPool(2)
         val syncThreadPool = Executors.newSingleThreadExecutor()
 
-
         Mockito.`when`(plugin.server).thenReturn(server)
         Mockito.`when`(server.scheduler).thenReturn(scheduler)
         Mockito.`when`(
@@ -76,6 +75,7 @@ class DSLTest {
                 Mockito.mock(BukkitTask::class.java)
             }
         Mockito.`when`(server.logger).thenReturn(Logger.getAnonymousLogger())
+        Mockito.`when`(plugin.logger).thenReturn(Logger.getAnonymousLogger())
 
         syncThreadPool.submit(Runnable {
             val primaryThreadId = Thread.currentThread().id

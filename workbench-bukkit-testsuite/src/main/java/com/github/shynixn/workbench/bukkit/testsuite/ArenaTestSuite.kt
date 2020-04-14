@@ -1,7 +1,6 @@
 package com.github.shynixn.workbench.bukkit.testsuite
 
 import com.github.shynixn.workbench.bukkit.common.dsl.registerCommands
-import com.github.shynixn.workbench.bukkit.testsuite.arena.*
 import com.github.shynixn.workbench.bukkit.yaml.dsl.loadFromYamlFile
 import com.github.shynixn.workbench.bukkit.yaml.dsl.registerPlayerResource
 import com.github.shynixn.workbench.bukkit.yaml.dsl.registerResource
@@ -37,40 +36,6 @@ import org.bukkit.plugin.Plugin
 class ArenaTestSuite {
 
     suspend fun setup(plugin: Plugin) {
-        registerPlayerResource({ player ->
-            suspend {
-            }
-        },
-            { player ->
-                suspend {
-                    PlayerStats(player)
-                }
-            },
 
-            { player ->
-                suspend {
-
-                }
-            }
-        )
-
-        registerResource({
-            suspend {
-                arrayListOf<Kit>(loadFromYamlFile<GilgameshKit>(plugin.dataFolder.toPath().resolve(KitType.Gilgamesh.identifier + ".yml"))!!)
-            }
-        },
-            {
-                suspend {
-                    GilgameshKit()
-                }
-            },
-
-            { item ->
-                suspend {
-                }
-            }
-        )
-
-        plugin.server.pluginManager.registerCommands("fate", FateCommandExecutor(), plugin)
     }
 }

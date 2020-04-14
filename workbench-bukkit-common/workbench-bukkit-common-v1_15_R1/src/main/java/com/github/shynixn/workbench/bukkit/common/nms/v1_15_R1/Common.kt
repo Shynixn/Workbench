@@ -1,4 +1,10 @@
-package com.github.shynixn.workbench.bukkit.testsuite.arena
+package com.github.shynixn.workbench.bukkit.common.nms.v1_15_R1
+
+import com.github.shynixn.workbench.minecraft.common.dsl.CommonNMS
+import net.minecraft.server.v1_15_R1.EntityLiving
+import net.minecraft.server.v1_15_R1.GenericAttributes
+import net.minecraft.server.v1_15_R1.IAttribute
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity
 
 /**
  * Created by Shynixn 2020.
@@ -27,13 +33,25 @@ package com.github.shynixn.workbench.bukkit.testsuite.arena
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-enum class OSArchitectureTypes(var identififer : String) {
-    WINDOWS_32("windows-32"),
-    WINDOWS_64("windows-64"),
-    LINUX_32("linux-32"),
-    LINUX_64("linux-64"),
-    LINUX_ARMHF("linux-armhf"),
-    LINUX_ARMEL("linux-armel"),
-    LINUX_ARM64("linux-arm64"),
-    OSX_64("osx-64")
+class Common : CommonNMS {
+    /**
+     * Gets the nms entity from the bukkit entity.
+     */
+    override fun getNMSEntityFromBukkitEntity(entity: Any): Any {
+        return (entity as CraftEntity).handle
+    }
+
+    /**
+     * Applies the given generic attribute.
+     */
+    override fun applyGenericAttribute(entity: Any, name: String, value: Double) {
+        val nmsEntity = getNMSEntityFromBukkitEntity(entity) as EntityLiving
+
+        val genericAttribute = GenericAttributes::class.java.declaredFields.asSequence()
+            .filter { e -> e.type == IAttribute::class.java }.map { e -> e.get(null) as IAttribute }.first { e ->
+                e.name == name
+            }
+
+        nmsEntity.getAttributeInstance(genericAttribute).value = value
+    }
 }

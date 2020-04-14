@@ -1,4 +1,4 @@
-package com.github.shynixn.workbench.bukkit.testsuite.arena
+package com.github.shynixn.workbench.bukkit.common.dsl.attribute
 
 /**
  * Created by Shynixn 2020.
@@ -27,6 +27,14 @@ package com.github.shynixn.workbench.bukkit.testsuite.arena
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface Kit {
-    val kitType: KitType
+interface GenericAttribute {
+    /**
+     * Type of the attribute.
+     */
+    var type: GenericAttributeType
+
+    /**
+     * Value of the attribute.
+     */
+    var value: Double
 }

@@ -1,13 +1,20 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.github.shynixn.workbench.bukkit.common.dsl
 
+import com.github.shynixn.workbench.bukkit.common.dsl.attribute.GenericAttribute
+import com.github.shynixn.workbench.bukkit.common.dsl.attribute.GenericAttributeType
 import com.github.shynixn.workbench.bukkit.common.implementation.CommandExecutorImpl
 import com.github.shynixn.workbench.bukkit.common.implementation.LoggerImpl
 import com.github.shynixn.workbench.bukkit.common.implementation.WorkBenchResourceImpl
+import com.github.shynixn.workbench.bukkit.common.implementation.attribute.GenericAttributeImpl
 import com.github.shynixn.workbench.minecraft.common.dsl.Position
 import com.github.shynixn.workbench.minecraft.common.dsl.position
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Entity
+import org.bukkit.entity.EntityType
+import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.PluginManager
@@ -67,6 +74,39 @@ fun player(f: () -> String): Player {
     return Bukkit.getPlayer(f.invoke())!!
 }
 
+/**
+ * Clears all entities on the server.
+ */
+fun clearAllEntities() {
+    Bukkit.getServer().worlds.stream().forEach { world ->
+        world.entities.forEach { e ->
+            if (e !is Player) {
+                e.remove()
+            }
+        }
+    }
+}
+
+/**
+ * Spawns a new entity.
+ */
+fun <T> entity(f: () -> Pair<EntityType, Location>): T {
+    val entityPair = f.invoke()
+    return entityPair.second.world!!.spawnEntity(entityPair.second, entityPair.first) as T
+}
+
+/**
+ * Applies a generic attribute to the living entity.
+ */
+fun LivingEntity.genericAttribute(f: GenericAttribute.() -> Unit) {
+    val genericAttribute = GenericAttributeImpl(GenericAttributeType.FOLLOW_RANGE, 0.0)
+    f.invoke(genericAttribute)
+    (workbenchResource as WorkBenchResourceImpl).commonNMS!!.applyGenericAttribute(
+        this,
+        genericAttribute.type.identififer,
+        genericAttribute.value
+    )
+}
 
 /**
  * Gets the player by the uuid.

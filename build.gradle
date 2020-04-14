@@ -219,6 +219,8 @@ task downloadDependencies(type: Exec) {
     def text = "cd build/buildtools"
     text += " && java -jar BuildTools.jar --rev 1.14.4"
     text += " && mvn install:install-file -Dfile=spigot-1.14.4.jar -DgroupId=org.spigotmc -DartifactId=spigot114R1 -Dversion=1.14.4-R1.0 -Dpackaging=jar"
+    text += " && java -jar BuildTools.jar --rev 1.15"
+    text += " && mvn install:install-file -Dfile=spigot-1.15.jar -DgroupId=org.spigotmc -DartifactId=spigot115R1 -Dversion=1.15.0-R1.0 -Dpackaging=jar"
 
     standardOutput = new ByteArrayOutputStream()
 

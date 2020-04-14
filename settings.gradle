@@ -7,4 +7,5 @@ include 'workbench-bukkit-item'
 include 'workbench-bukkit-testsuite'
 include 'workbench-yaml'
 include 'workbench-bukkit-yaml'
+include 'workbench-bukkit-common:workbench-bukkit-common-v1_15_R1'
 
