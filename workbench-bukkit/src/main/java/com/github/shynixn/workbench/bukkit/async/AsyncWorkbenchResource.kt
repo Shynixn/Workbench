@@ -1,5 +1,8 @@
-package com.github.shynixn.workbench.bukkit.testsuite
+package com.github.shynixn.workbench.bukkit.async
 
+import com.github.shynixn.workbench.bukkit.common.WorkbenchResource
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelChildren
 import org.bukkit.plugin.Plugin
 
 /**
@@ -29,9 +32,40 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ArenaTestSuite {
+class AsyncWorkbenchResource : WorkbenchResource {
+    var registered: Boolean = false
+    var asyncDispatcher: AsyncCoroutineDispatcher? = null
+    var syncDispatcher: SyncCoroutineDispatcher? = null
 
-    suspend fun setup(plugin: Plugin) {
+    /**
+     * Allocates all workBench resources.
+     */
+    override fun onEnable(plugin: Plugin) {
+        if (asyncDispatcher != null) {
+            throw IllegalArgumentException("AsyncWorkBench cannot be enabled twice!")
+        }
 
+        asyncDispatcher =
+            AsyncCoroutineDispatcher(plugin)
+        syncDispatcher =
+            SyncCoroutineDispatcher(plugin)
+        registered = true
+    }
+
+    /**
+     * Frees all workBench resources.
+     */
+    override fun onDisable() {
+        if (asyncDispatcher == null) {
+            return
+        }
+
+        asyncDispatcher!!.cancel()
+        asyncDispatcher!!.cancelChildren()
+        syncDispatcher!!.cancel()
+        syncDispatcher!!.cancelChildren()
+        asyncDispatcher = null
+        syncDispatcher = null
+        registered = false
     }
 }

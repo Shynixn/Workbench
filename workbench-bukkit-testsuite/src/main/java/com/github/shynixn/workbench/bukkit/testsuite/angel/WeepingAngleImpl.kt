@@ -1,6 +1,7 @@
-package com.github.shynixn.workbench.bukkit.testsuite
+package com.github.shynixn.workbench.bukkit.testsuite.angel
 
-import org.bukkit.plugin.Plugin
+import org.bukkit.Location
+import org.bukkit.entity.LivingEntity
 
 /**
  * Created by Shynixn 2020.
@@ -29,9 +30,30 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ArenaTestSuite {
+class WeepingAngleImpl(private val initialLocation: Location) : WeepingAngel {
+    private var weepingAngelZombie: WeepingAngelZombie? = null
 
-    suspend fun setup(plugin: Plugin) {
-
+    init {
+        weepingAngelZombie = WeepingAngelZombie(this)
     }
+
+    /**
+     * Gets the bukkit handle behind this entity.
+     */
+    override val handle: LivingEntity
+        get() {
+            return weepingAngelZombie!!.bukkitEntity
+        }
+
+    /**
+     * Gets the location.
+     */
+    override val location: Location
+        get() {
+            if (weepingAngelZombie == null) {
+                return initialLocation
+            }
+
+            return weepingAngelZombie!!.bukkitEntity.location
+        }
 }

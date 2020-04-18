@@ -1,6 +1,4 @@
-package com.github.shynixn.workbench.bukkit.testsuite
-
-import org.bukkit.plugin.Plugin
+package com.github.shynixn.workbench.bukkit.entity
 
 /**
  * Created by Shynixn 2020.
@@ -29,9 +27,14 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ArenaTestSuite {
+interface GenericAttribute {
+    /**
+     * Type of the attribute.
+     */
+    var type: GenericAttributeType
 
-    suspend fun setup(plugin: Plugin) {
-
-    }
+    /**
+     * Value of the attribute.
+     */
+    var value: Double
 }

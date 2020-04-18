@@ -1,10 +1,18 @@
 package com.github.shynixn.workbench.bukkit.testsuite
 
-import com.github.shynixn.workbench.bukkit.common.dsl.*
-import com.github.shynixn.workbench.bukkit.common.dsl.attribute.GenericAttributeType
-import org.bukkit.entity.EntityType
-import org.bukkit.entity.Zombie
+import com.github.shynixn.workbench.bukkit.common.ChatColor
+import com.github.shynixn.workbench.bukkit.common.clearAllEntities
+import com.github.shynixn.workbench.bukkit.common.player
+import com.github.shynixn.workbench.bukkit.common.workbenchResource
+import com.github.shynixn.workbench.bukkit.testsuite.angel.*
+import com.mojang.authlib.GameProfile
+import com.mojang.authlib.properties.Property
+import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
+import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder
+import java.util.*
+
 
 /**
  * Created by Shynixn 2020.
@@ -35,6 +43,7 @@ import org.bukkit.plugin.java.JavaPlugin
  */
 class WorkBenchTestSuitePlugin : JavaPlugin() {
     private val prefix = ChatColor.GREEN.toString() + "[TestSuite] " + ChatColor.WHITE
+    val entityRegistration = EntityRegistration114R1ServiceImpl()
 
     /**
      * OnEnable.
@@ -44,17 +53,41 @@ class WorkBenchTestSuitePlugin : JavaPlugin() {
         val player = player { "Shynixn" }
 
         clearAllEntities()
-        val zombie = entity<Zombie> {
-            EntityType.ZOMBIE to player.location.add(2.0, 0.0, 0.0)
+
+        Bukkit.getServer().worlds.stream().forEach { world ->
+            world.entities.forEach { e ->
+                if (e !is Player) {
+                    try {
+                        (e as Any).javaClass.getDeclaredMethod("deleteFromWorld").invoke(e)
+                    } catch (ex: Exception) {
+                        e.remove()
+                    }
+                }
+            }
         }
 
-        zombie.genericAttribute {
-            type = GenericAttributeType.FOLLOW_RANGE
-            value = 150.0
-        }
+
+        entityRegistration.register(WeepingAngelZombie::class.java, EntityType.ZOMBIE)
+
+        val weepingAngle = WeepingAngleImpl(player.location)
 
 
+        /*  val server = (Bukkit.getServer() as CraftServer).getServer() as MinecraftServer
+          val world= (Bukkit.getWorlds().get(0) as CraftWorld).getHandle()
+          val npc = EntityPlayer(
+              server,
+              world,
+              generateGameProfile("http://textures.minecraft.net/texture/70d806f19a7526fc6fa48f42f703b90add8142dac7f37ad1be1b4edcac5ba83", null),
+              PlayerInteractManager(world)
+          )
 
+          npc.setLocation(player.location.x, player.location.y, player.location.z, player.location.yaw, player.location.pitch)
+
+          for (p in Bukkit.getOnlinePlayers()) {
+              val connection = (p as CraftPlayer).getHandle().playerConnection
+              connection.sendPacket(PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, npc))
+              connection.sendPacket(PacketPlayOutNamedEntitySpawn(npc))
+          }*/
 
         //  video.download(  video.audioFormats().get(0), File("testdownload/audio.mp3"))
 
@@ -72,7 +105,24 @@ class WorkBenchTestSuitePlugin : JavaPlugin() {
           }*/
     }
 
+    private fun generateGameProfile(skin: String, name: String?): GameProfile {
+        var newSkin = skin
+        val newSkinProfile = GameProfile(UUID.randomUUID(), name)
+
+        if (newSkin.contains("textures.minecraft.net")) {
+            if (!newSkin.startsWith("http://")) {
+                newSkin = "http://$newSkin"
+            }
+
+            newSkin = Base64Coder.encodeString("{textures:{SKIN:{url:\"$newSkin\"}}}")
+        }
+
+        newSkinProfile.properties.put("textures", Property("textures", newSkin))
+        return newSkinProfile
+    }
+
     override fun onDisable() {
         workbenchResource.onDisable()
+        entityRegistration.clearResources()
     }
 }

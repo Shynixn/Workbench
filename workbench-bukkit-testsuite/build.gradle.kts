@@ -29,12 +29,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":workbench-bukkit-yaml"))
-    implementation(project(":workbench-bukkit-async"))
-    implementation(project(":workbench-bukkit-common"))
-    implementation(project(":workbench-bukkit-item"))
-    implementation(project(":workbench-bukkit-particle"))
-    implementation(project(":workbench-minecraft-common"))
+    implementation(project(":workbench-bukkit"))
     compileOnly(project.properties["minecraft.current.version"]!!)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.5")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.71")

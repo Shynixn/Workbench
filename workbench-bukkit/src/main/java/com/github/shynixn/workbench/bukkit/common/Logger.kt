@@ -1,6 +1,4 @@
-package com.github.shynixn.workbench.bukkit.testsuite
-
-import org.bukkit.plugin.Plugin
+package com.github.shynixn.workbench.bukkit.common
 
 /**
  * Created by Shynixn 2020.
@@ -29,9 +27,24 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ArenaTestSuite {
+interface Logger {
+    /**
+     * Logs an information message.
+     */
+    fun info(f: () -> String)
 
-    suspend fun setup(plugin: Plugin) {
+    /**
+     * Logs a warning message.
+     */
+    fun warning(f: () -> String)
 
-    }
+    /**
+     * Logs an error message.
+     */
+    fun error(f: () -> String)
+
+    /**
+     * Logs an throwable.
+     */
+    fun throwable(f: () -> Throwable)
 }

@@ -1,6 +1,8 @@
-package com.github.shynixn.workbench.bukkit.testsuite
+package com.github.shynixn.workbench.bukkit.particle
 
-import org.bukkit.plugin.Plugin
+import com.github.shynixn.workbench.bukkit.common.Position
+import org.bukkit.Location
+import org.bukkit.entity.Player
 
 /**
  * Created by Shynixn 2020.
@@ -29,9 +31,34 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ArenaTestSuite {
+interface Circle : Group {
+    /**
+     * Radius of the circle.
+     */
+    var radius: Double
 
-    suspend fun setup(plugin: Plugin) {
+    /**
+     * X,Y,Z Axis rotation.
+     */
+    var rotation: Position
 
-    }
+    /**
+     * Density in percentage.
+     */
+    var density: Double
+
+    /**
+     * Skips the given angle.
+     */
+    fun skipAngle(f: () -> Double): Circle
+
+    /**
+     * Plays the particle.
+     */
+    fun play(location: Location, vararg players: Player)
+
+    /**
+     * Plays the particle.
+     */
+    fun play(location: Location, players: Collection<Player>)
 }

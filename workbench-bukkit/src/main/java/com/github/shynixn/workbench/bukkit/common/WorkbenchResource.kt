@@ -1,5 +1,6 @@
-package com.github.shynixn.workbench.bukkit.testsuite
+package com.github.shynixn.workbench.bukkit.common
 
+import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 
 /**
@@ -29,9 +30,30 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ArenaTestSuite {
+interface WorkbenchResource {
+    /**
+     * Registers a new sub workBench resource. Gets immediately enabled if the parent
+     * workBench resource is enabled. Gets automatically disabled if the parent is disabled.
+     */
+    fun registerSubResource(workbenchResource: WorkbenchResource) {}
 
-    suspend fun setup(plugin: Plugin) {
+    /**
+     * Allocates all workBench resources.
+     */
+    fun onEnable(plugin: Plugin)
 
-    }
+    /**
+     * OnPlayerLeaveEvent.
+     */
+    fun onPlayerLeaveEvent(player: Player) {}
+
+    /**
+     * Performs a lightweight reload on resources.
+     */
+    fun reload() {}
+
+    /**
+     * Frees all workBench resources.
+     */
+    fun onDisable()
 }

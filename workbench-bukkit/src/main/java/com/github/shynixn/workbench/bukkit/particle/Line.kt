@@ -1,6 +1,7 @@
-package com.github.shynixn.workbench.bukkit.testsuite
+package com.github.shynixn.workbench.bukkit.particle
 
-import org.bukkit.plugin.Plugin
+import org.bukkit.Location
+import org.bukkit.entity.Player
 
 /**
  * Created by Shynixn 2020.
@@ -29,9 +30,39 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ArenaTestSuite {
+interface Line : Group {
+    /**
+     * Density in percentage.
+     */
+    var density: Double
 
-    suspend fun setup(plugin: Plugin) {
+    /**
+     * X Distance.
+     */
+    var x : Double
 
-    }
+    /**
+     * Y Distance.
+     */
+    var y : Double
+
+    /**
+     * Z Distance.
+     */
+    var z : Double
+
+    /**
+     * Skips the given distance.
+     */
+    fun skipDistance(f: () -> Double): Line
+
+    /**
+     * Plays the particle.
+     */
+    fun play(location: Location, vararg players: Player)
+
+    /**
+     * Plays the particle.
+     */
+    fun play(location: Location, players: Collection<Player>)
 }

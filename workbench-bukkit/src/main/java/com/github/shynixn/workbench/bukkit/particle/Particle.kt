@@ -1,6 +1,7 @@
-package com.github.shynixn.workbench.bukkit.testsuite
+package com.github.shynixn.workbench.bukkit.particle
 
-import org.bukkit.plugin.Plugin
+import org.bukkit.Location
+import org.bukkit.entity.Player
 
 /**
  * Created by Shynixn 2020.
@@ -29,9 +30,69 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ArenaTestSuite {
+interface Particle {
+    /**
+     * Gets or sets the particle typeName.
+     */
+    var name: String
 
-    suspend fun setup(plugin: Plugin) {
+    /**
+     * RGB Color code of red.
+     */
+    var colorRed: Int
 
-    }
+    /**
+     * RGB Color code of green.
+     */
+    var colorGreen: Int
+
+    /**
+     * RGB Color code of blue.
+     */
+    var colorBlue: Int
+
+    /**
+     * Amount of particles.
+     */
+    var amount: Int
+
+    /**
+     * Particle speed.
+     */
+    var speed: Double
+
+    /**
+     * Offset for the x coordinate.
+     */
+    var offSetX: Double
+
+    /**
+     * Offset for the y coordinate.
+     */
+    var offSetY: Double
+
+    /**
+     * Offset for the z coordinate.
+     */
+    var offSetZ: Double
+
+    /**
+     * Material value.
+     */
+    var materialName: String?
+
+    /**
+     * Data value.
+     */
+    var dataValue: Int
+
+    /**
+     * Plays the particle.
+     */
+    fun play(location: Location, vararg players: Player)
+
+    /**
+     * Plays the particle.
+     */
+    fun play(location: Location, players: Collection<Player>)
 }

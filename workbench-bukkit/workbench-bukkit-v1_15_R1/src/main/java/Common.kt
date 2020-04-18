@@ -1,6 +1,10 @@
-package com.github.shynixn.workbench.bukkit.testsuite
+package com.github.shynixn.workbench.bukkit.nms.v1_15_R1
 
-import org.bukkit.plugin.Plugin
+import net.minecraft.server.v1_15_R1.EntityLiving
+import net.minecraft.server.v1_15_R1.GenericAttributes
+import net.minecraft.server.v1_15_R1.IAttribute
+import org.bukkit.craftbukkit.v1_15_R1.CraftWorld
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity
 
 /**
  * Created by Shynixn 2020.
@@ -29,9 +33,32 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ArenaTestSuite {
+class Common {
+    /**
+     * Gets the nms entity from the bukkit entity.
+     */
+   fun getNMSEntityFromBukkitEntity(entity: Any): Any {
+        return (entity as CraftEntity).handle
+    }
 
-    suspend fun setup(plugin: Plugin) {
+    /**
+     * Gets the nms world from the bukkit world.
+     */
+    fun getNMSWorldFromBukkitWorld(world: Any): Any {
+        return (world as CraftWorld).handle
+    }
 
+    /**
+     * Applies the given generic attribute.
+     */
+     fun applyGenericAttribute(entity: Any, name: String, value: Double) {
+        val nmsEntity = getNMSEntityFromBukkitEntity(entity) as EntityLiving
+
+        val genericAttribute = GenericAttributes::class.java.declaredFields.asSequence()
+            .filter { e -> e.type == IAttribute::class.java }.map { e -> e.get(null) as IAttribute }.first { e ->
+                e.name == name
+            }
+
+        nmsEntity.getAttributeInstance(genericAttribute).value = value
     }
 }

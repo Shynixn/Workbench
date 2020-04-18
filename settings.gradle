@@ -1,11 +1,5 @@
 rootProject.name = 'workbench-root'
-include 'workbench-bukkit-common'
-include 'workbench-bukkit-particle'
-include 'workbench-bukkit-async'
-include 'workbench-minecraft-common'
-include 'workbench-bukkit-item'
+include 'workbench-bukkit'
 include 'workbench-bukkit-testsuite'
-include 'workbench-yaml'
-include 'workbench-bukkit-yaml'
-include 'workbench-bukkit-common:workbench-bukkit-common-v1_15_R1'
+include 'workbench-bukkit:workbench-bukkit-v1_15_R1'
 

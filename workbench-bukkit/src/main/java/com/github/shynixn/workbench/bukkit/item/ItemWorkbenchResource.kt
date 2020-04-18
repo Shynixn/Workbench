@@ -1,5 +1,7 @@
-package com.github.shynixn.workbench.bukkit.testsuite
+package com.github.shynixn.workbench.bukkit.item
 
+import com.github.shynixn.workbench.bukkit.common.WorkbenchResource
+import org.bukkit.Material
 import org.bukkit.plugin.Plugin
 
 /**
@@ -29,9 +31,20 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ArenaTestSuite {
+class ItemWorkbenchResource : WorkbenchResource {
+    var registered: Boolean = false
+    val materialCache: MutableMap<Any, Material> = HashMap()
 
-    suspend fun setup(plugin: Plugin) {
+    /**
+     * Allocates all workBench resources.
+     */
+    override fun onEnable(plugin: Plugin) {
+    }
 
+    /**
+     * Frees all workBench resources.
+     */
+    override fun onDisable() {
+        materialCache.clear()
     }
 }

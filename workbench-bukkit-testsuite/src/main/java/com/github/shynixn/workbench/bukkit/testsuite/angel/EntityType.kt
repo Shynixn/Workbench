@@ -1,15 +1,13 @@
-package com.github.shynixn.workbench.bukkit.testsuite
-
-import org.bukkit.plugin.Plugin
+package com.github.shynixn.workbench.bukkit.testsuite.angel
 
 /**
- * Created by Shynixn 2020.
+ * Created by Shynixn 2018.
  * <p>
- * Version 1.5
+ * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2020 by Shynixn
+ * Copyright (c) 2018 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,9 +27,40 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ArenaTestSuite {
+enum class EntityType(
+        /**
+         * Entity internal id.
+         */
+        val entityId: Int,
+        /**
+         * Simplified name independent from version.
+         */
+        val entityName: String,
+        /**
+         *  SaveGame id from 1.8.0 to 1.10.2.
+         */
+        val saveGame_18: String,
+        /**
+         * SaveGame id from 1.11.0 to 1.13.0.
+         */
+        val saveGame_11: String) {
+    /**
+     * Rabbit EntityType.
+     */
+    RABBIT(101, "RABBIT", "Rabbit", "rabbit"),
 
-    suspend fun setup(plugin: Plugin) {
+    /**
+     * Villager entity type.
+     */
+    VILLAGER(120, "VILLAGER", "Villager", "villager"),
 
-    }
+    /**
+     * Armorstand EntityType.
+     */
+    ZOMBIE(54, "ZOMBIE", "Zombie", "zombie"),
+
+    /**
+     * Armorstand EntityType.
+     */
+    ARMORSTAND(30, "ARMORSTAND", "Armorstand", "armorstand"),
 }

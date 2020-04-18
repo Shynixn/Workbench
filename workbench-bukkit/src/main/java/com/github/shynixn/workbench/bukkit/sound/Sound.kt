@@ -1,6 +1,7 @@
-package com.github.shynixn.workbench.bukkit.testsuite
+package com.github.shynixn.workbench.bukkit.sound
 
-import org.bukkit.plugin.Plugin
+import org.bukkit.Location
+import org.bukkit.entity.Player
 
 /**
  * Created by Shynixn 2020.
@@ -29,9 +30,30 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ArenaTestSuite {
+interface Sound {
+    /**
+     * Gets or sets the sound name. Supports cross platform compatibility by
+     * executing multiple sounds split by ','.
+     */
+    var name: String
 
-    suspend fun setup(plugin: Plugin) {
+    /**
+     * Pitch of the sound between 0.0 and 2.0.
+     */
+    var pitch: Double
 
-    }
+    /**
+     * Range of blocks where the sound can be heard.
+     */
+    var volume: Double
+
+    /**
+     * Plays the sound.
+     */
+    fun play(location: Location, vararg players: Player)
+
+    /**
+     * Plays the sound.
+     */
+    fun play(location: Location, players: Collection<Player>)
 }

@@ -1,9 +1,6 @@
 package com.github.shynixn.workbench.bukkit.testsuite
 
-import com.github.shynixn.workbench.bukkit.particle.dsl.circle
-import com.github.shynixn.workbench.bukkit.particle.dsl.line
-import com.github.shynixn.workbench.bukkit.particle.dsl.particle
-import kotlinx.coroutines.delay
+import com.github.shynixn.workbench.bukkit.particle.circle
 import org.bukkit.entity.Player
 
 /**

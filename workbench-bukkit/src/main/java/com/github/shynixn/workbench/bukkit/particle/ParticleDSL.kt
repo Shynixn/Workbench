@@ -1,6 +1,6 @@
-package com.github.shynixn.workbench.bukkit.testsuite
+package com.github.shynixn.workbench.bukkit.particle
 
-import org.bukkit.plugin.Plugin
+import java.util.stream.Stream
 
 /**
  * Created by Shynixn 2020.
@@ -29,9 +29,37 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ArenaTestSuite {
 
-    suspend fun setup(plugin: Plugin) {
+/**
+ * Creates a new particle.
+ */
+fun particle(f: Particle.() -> Unit): Particle {
+    val particle = ParticleImpl()
+    f.invoke(particle)
+    return particle
+}
 
-    }
+/**
+ * Alternates between the given particles.
+ */
+fun alternate(vararg particles: Particle): Stream<Particle> {
+    return Stream.of(*particles)
+}
+
+/**
+ * Creates a new particle line.
+ */
+fun line(f: Line.() -> Unit): Line {
+    val line = LineImpl()
+    f.invoke(line)
+    return line
+}
+
+/**
+ * Creates a new particle circle.
+ */
+fun circle(f: Circle.() -> Unit): Circle {
+    val circle = CircleImpl()
+    f.invoke(circle)
+    return circle
 }

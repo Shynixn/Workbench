@@ -1,6 +1,7 @@
-package com.github.shynixn.workbench.bukkit.testsuite
+package com.github.shynixn.workbench.bukkit.testsuite.angel
 
-import org.bukkit.plugin.Plugin
+import org.bukkit.Location
+import org.bukkit.entity.LivingEntity
 
 /**
  * Created by Shynixn 2020.
@@ -29,9 +30,14 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ArenaTestSuite {
+interface WeepingAngel {
+    /**
+     * Gets the bukkit handle behind this entity.
+     */
+    val handle: LivingEntity
 
-    suspend fun setup(plugin: Plugin) {
-
-    }
+    /**
+     * Gets the location.
+     */
+    val location: Location
 }

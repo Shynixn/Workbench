@@ -1,6 +1,8 @@
-package com.github.shynixn.workbench.bukkit.testsuite
+package com.github.shynixn.workbench.bukkit.common
 
-import org.bukkit.plugin.Plugin
+import org.bukkit.command.Command
+import org.bukkit.command.CommandExecutor
+import org.bukkit.command.CommandSender
 
 /**
  * Created by Shynixn 2020.
@@ -29,9 +31,13 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ArenaTestSuite {
-
-    suspend fun setup(plugin: Plugin) {
-
+internal class CommandExecutorImpl(private val commandExecutor: com.github.shynixn.workbench.bukkit.common.CommandExecutor) :
+    CommandExecutor {
+    /**
+     * Wrapper command.
+     */
+    override fun onCommand(p0: CommandSender, p1: Command, p2: String, p3: Array<out String>): Boolean {
+        commandExecutor.onExecuteCommand(p0, p3)
+        return true
     }
 }

@@ -1,6 +1,4 @@
-package com.github.shynixn.workbench.bukkit.testsuite
-
-import org.bukkit.plugin.Plugin
+package com.github.shynixn.workbench.bukkit.particle
 
 /**
  * Created by Shynixn 2020.
@@ -29,9 +27,24 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ArenaTestSuite {
+interface Group {
+    /**
+     * Adds a new particle to this group.
+     */
+    fun particle(amount : Int = 1, f: Particle.() -> Unit)
 
-    suspend fun setup(plugin: Plugin) {
+    /**
+     * Adds a new circle to this group.
+     */
+    fun circle(amount : Int = 1, f: Circle.() -> Unit)
 
-    }
+    /**
+     * Adds a line to this group.
+     */
+    fun line(amount : Int = 1, f: Line.() -> Unit)
+
+    /**
+     * Adds a new delay to this group.
+     */
+    fun delay(amount : Int = 1, f: () -> Int)
 }

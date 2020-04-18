@@ -1,6 +1,9 @@
-package com.github.shynixn.workbench.bukkit.testsuite
+package unittest.common
 
-import org.bukkit.plugin.Plugin
+import com.github.shynixn.workbench.bukkit.common.LoggerImpl
+import org.junit.jupiter.api.Assertions.assertDoesNotThrow
+import org.junit.jupiter.api.Test
+import java.util.logging.Logger
 
 /**
  * Created by Shynixn 2020.
@@ -29,9 +32,25 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ArenaTestSuite {
+class LoggerTest {
+    /**
+     * Given
+     *      a new logger
+     * When
+     *      log is called
+     * Then
+     *     data should be printed.
+     */
+    @Test
+    fun log_NewLogger_ShouldPrintMessage() {
+        // Arrange
+        val classUnderTest = LoggerImpl()
+        classUnderTest.info { "Hello World" }
+        classUnderTest.throwable { RuntimeException("Failure!") }
 
-    suspend fun setup(plugin: Plugin) {
-
+        // Act
+        assertDoesNotThrow {
+            classUnderTest.log(Logger.getAnonymousLogger())
+        }
     }
 }
